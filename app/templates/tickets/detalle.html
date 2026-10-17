@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block titulo %}{{ t.codigo }}{% endblock %}
+{% block contenido %}
+{% set u = g.usuario %}
+{% set gestor = u.rol in ('administrador', 'coordinador') %}
+{% set duenio = u.rol == 'solicitante' and t.solicitante_id == u.id %}
+{% set asignado = u.rol == 'tecnico' and t.tecnico_id == u.id %}
+
+<h1>{{ t.codigo }} · {{ t.asunto }}</h1>
+<div class="panel">
+  <dl class="dato">
+    <dt>Estado</dt><dd><span class="estado">{{ t.estado }}</span></dd>
+    <dt>Prioridad</dt><dd>{{ t.prioridad }}</dd>
+    <dt>Categoría</dt><dd>{{ t.categoria }}</dd>
+    <dt>Solicitante</dt><dd>{{ t.solicitante_nombre }}</dd>
+    <dt>Técnico asignado</dt><dd>{{ t.tecnico_nombre or 'Sin asignar' }}</dd>
+    <dt>Fecha de creación</dt><dd>{{ t.fecha_creacion }}</dd>
+    <dt>Descripción</dt><dd style="white-space:pre-line">{{ t.descripcion }}</dd>
+    {% if t.solucion %}<dt>Solución</dt><dd style="white-space:pre-line">{{ t.solucion }}</dd>{% endif %}
+    {% if t.fecha_resolucion %}<dt>Resuelto el</dt><dd>{{ t.fecha_resolucion }}</dd>{% endif %}
+    {% if t.motivo_cancelacion %}<dt>Motivo de cancelación</dt><dd>{{ t.motivo_cancelacion }}</dd>{% endif %}
+  </dl>
+</div>
+
+{% if t.estado not in reglas.ESTADOS_FINALES %}
+<h2>Acciones disponibles</h2>
+<div class="acciones">
+  {% if gestor and t.estado == 'Nuevo' %}
+  <form method="post" action="{{ url_for('tickets.asignar', ticket_id=t.id) }}">
+    <h3>Asignar a un técnico</h3>
+    <select name="tecnico_id" required>
+      {% for tec in tecnicos %}<option value="{{ tec.id }}">{{ tec.nombre }}</option>{% endfor %}
+    </select>
+    <p><button type="submit">Asignar</button></p>
+  </form>
+  {% endif %}
+
+  {% if asignado and t.estado in ('Asignado', 'En progreso', 'Pendiente del solicitante') %}
+  <form method="post" action="{{ url_for('tickets.cambiar_estado', ticket_id=t.id) }}">
+    <h3>Cambiar estado</h3>
+    <select name="estado">
+      {% for e in reglas.TRANSICIONES[t.estado] %}<option>{{ e }}</option>{% endfor %}
+    </select>
+    <label for="texto">Comentario (obligatorio si marca «Resuelto»: describa la solución)</label>
+    <textarea id="texto" name="texto"></textarea>
+    <p><button type="submit">Guardar estado</button></p>
+  </form>
+  {% endif %}
+
+  {% if asignado or gestor %}
+  <form method="post" action="{{ url_for('tickets.comentar', ticket_id=t.id) }}">
+    <h3>Comentario de seguimiento</h3>
+    <textarea name="texto" required></textarea>
+    <p><button type="submit">Agregar comentario</button></p>
+  </form>
+  {% endif %}
+
+  {% if duenio and t.estado in reglas.ESTADOS_ABIERTOS %}
+  <form method="post" action="{{ url_for('tickets.complementar', ticket_id=t.id) }}">
+    <h3>Agregar información</h3>
+    <textarea name="texto" required></textarea>
+    <p><button type="submit">Enviar información</button></p>
+  </form>
+  {% endif %}
+
+  {% if duenio and t.estado == 'Nuevo' %}
+  <form method="post" action="{{ url_for('tickets.cancelar', ticket_id=t.id) }}">
+    <h3>Cancelar ticket</h3>
+    <label for="motivo">Motivo *</label>
+    <textarea id="motivo" name="motivo" required></textarea>
+    <p><button class="peligro" type="submit">Cancelar ticket</button></p>
+  </form>
+  {% endif %}
+
+  {% if (duenio or gestor) and t.estado == 'Resuelto' %}
+  <form method="post" action="{{ url_for('tickets.cerrar', ticket_id=t.id) }}">
+    <h3>Confirmar solución</h3>
+    <p class="suave">Si el problema quedó resuelto, cierre el ticket.</p>
+    <p><button type="submit">Cerrar ticket</button></p>
+  </form>
+  <form method="post" action="{{ url_for('tickets.reabrir', ticket_id=t.id) }}">
+    <h3>Reabrir ticket</h3>
+    <p class="suave">Disponible durante {{ reglas.DIAS_REAPERTURA }} días después de la resolución.</p>
+    <textarea name="motivo" required placeholder="¿Por qué se reabre?"></textarea>
+    <p><button class="secundario" type="submit">Reabrir</button></p>
+  </form>
+  {% endif %}
+</div>
+{% else %}
+<p class="mensaje aviso">Este ticket está en un estado final ({{ t.estado }}). Puede consultarlo, pero ya no admite cambios.</p>
+{% endif %}
+
+<h2>Historial de atención</h2>
+<div class="panel">
+  <ul class="historial">
+  {% for h in historial %}
+    <li><strong>{{ h.fecha[:16] }}</strong> · {{ h.usuario_nombre }} ·
+      {% if h.tipo == 'cambio_estado' %}{{ h.estado_anterior or '—' }} → {{ h.estado_nuevo }}
+      {% elif h.tipo == 'creacion' %}Creó el ticket
+      {% elif h.tipo == 'comentario' %}Comentario
+      {% else %}Información complementaria{% endif %}
+      {% if h.texto %}<br><span class="suave">{{ h.texto }}</span>{% endif %}</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endblock %}

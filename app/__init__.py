@@ -22,6 +22,8 @@ def create_app(config=None):
 
     from .autenticacion import bp as bp_autenticacion
     app.register_blueprint(bp_autenticacion)
+    from .tickets.rutas import bp as bp_tickets
+    app.register_blueprint(bp_tickets)
 
     @app.route("/")
     def inicio():

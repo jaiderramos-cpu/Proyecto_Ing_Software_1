@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar ticket{% endblock %}
+{% block contenido %}
+<h1>Registrar un ticket</h1>
+<form class="panel" method="post" style="max-width:720px">
+  <p class="suave">Los campos marcados con * son obligatorios. La fecha de creación se registra automáticamente.</p>
+  <label for="asunto">Asunto *</label>
+  <input type="text" id="asunto" name="asunto" maxlength="{{ reglas.MAX_ASUNTO }}" value="{{ datos.asunto }}" required>
+  <label for="descripcion">Descripción *</label>
+  <textarea id="descripcion" name="descripcion" maxlength="{{ reglas.MAX_DESCRIPCION }}" required>{{ datos.descripcion }}</textarea>
+  <label for="categoria">Categoría *</label>
+  <select id="categoria" name="categoria" required>
+    <option value="">Seleccione…</option>
+    {% for c in reglas.CATEGORIAS %}<option {% if datos.categoria == c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+  </select>
+  <label for="prioridad">Prioridad *</label>
+  <select id="prioridad" name="prioridad" required>
+    {% for p in reglas.PRIORIDADES %}<option {% if datos.prioridad == p %}selected{% endif %}>{{ p }}</option>{% endfor %}
+  </select>
+  <p><button type="submit">Registrar ticket</button> <a class="boton secundario" href="{{ url_for('tickets.listar') }}">Cancelar</a></p>
+</form>
+{% endblock %}
