@@ -1,0 +1,55 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti\.venv\Scripts\python.exe
+rootdir: C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 27 items
+
+tests/test_tickets.py::test_cp01_crear_ticket_valido PASSED              [  3%]
+tests/test_tickets.py::test_cp02_asunto_y_descripcion_obligatorios[asunto-] PASSED [  7%]
+tests/test_tickets.py::test_cp02_asunto_y_descripcion_obligatorios[asunto-   ] FAILED [ 11%]
+tests/test_tickets.py::test_cp02_asunto_y_descripcion_obligatorios[descripcion-] PASSED [ 14%]
+tests/test_tickets.py::test_cp02_asunto_y_descripcion_obligatorios[descripcion-\n\t ] FAILED [ 18%]
+tests/test_tickets.py::test_cp03_prioridad_y_categoria_validas[prioridad-Urgente] PASSED [ 22%]
+tests/test_tickets.py::test_cp03_prioridad_y_categoria_validas[prioridad-] PASSED [ 25%]
+tests/test_tickets.py::test_cp03_prioridad_y_categoria_validas[categoria-Cafeter\xeda] PASSED [ 29%]
+tests/test_tickets.py::test_cp04_limite_longitud_asunto PASSED           [ 33%]
+tests/test_tickets.py::test_cp05_coordinador_asigna_a_tecnico_activo PASSED [ 37%]
+tests/test_tickets.py::test_cp06_no_asignar_a_inactivo_ni_a_no_tecnico[tecnico3] PASSED [ 40%]
+tests/test_tickets.py::test_cp06_no_asignar_a_inactivo_ni_a_no_tecnico[ana] PASSED [ 44%]
+tests/test_tickets.py::test_cp07_usuario_sin_privilegios_no_asigna[ana] FAILED [ 48%]
+tests/test_tickets.py::test_cp07_usuario_sin_privilegios_no_asigna[tecnico1] FAILED [ 51%]
+tests/test_tickets.py::test_cp08_flujo_completo_de_estados PASSED        [ 55%]
+tests/test_tickets.py::test_cp09_transicion_invalida_no_cambia_ticket PASSED [ 59%]
+tests/test_tickets.py::test_cp10_resolver_exige_solucion PASSED          [ 62%]
+tests/test_tickets.py::test_cp11_cancelacion_por_el_solicitante PASSED   [ 66%]
+tests/test_tickets.py::test_cp12_solicitante_solo_ve_y_complementa_lo_suyo PASSED [ 70%]
+tests/test_tickets.py::test_cp13_plazo_de_reapertura[0-True] PASSED      [ 74%]
+tests/test_tickets.py::test_cp13_plazo_de_reapertura[5-True] FAILED      [ 77%]
+tests/test_tickets.py::test_cp13_plazo_de_reapertura[6-False] PASSED     [ 81%]
+tests/test_tickets.py::test_cp14_estados_finales_no_cambian PASSED       [ 85%]
+tests/test_tickets.py::test_cp15_operacion_atomica_ante_error PASSED     [ 88%]
+tests/test_tickets.py::test_cp16_tecnico_no_asignado_no_modifica PASSED  [ 92%]
+tests/test_tickets.py::test_cp17_filtros_de_consulta PASSED              [ 96%]
+tests/test_tickets.py::test_cp18_inicio_de_sesion_y_contrasenas PASSED   [100%]
+
+================================== FAILURES ===================================
+E   sqlite3.IntegrityError: CHECK constraint failed: length(trim(asunto)) > 0
+C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti\app\tickets\repositorio.py:14: sqlite3.IntegrityError: CHECK constraint failed: length(trim(asunto)) > 0
+E   Failed: DID NOT RAISE ErrorValidacion
+C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti\tests\test_tickets.py:44: Failed: DID NOT RAISE ErrorValidacion
+E   assert 302 == 403
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti\tests\test_tickets.py:86: assert 302 == 403
+E   assert 302 == 403
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti\tests\test_tickets.py:86: assert 302 == 403
+E   app.tickets.reglas.ErrorValidacion: El plazo de 5 días para reabrir terminó. Registre un ticket nuevo.
+C:\Users\Jaider Ramos\Desktop\Jaider\Para Ing de software Proyecto\soporte-ti\app\tickets\servicio.py:188: app.tickets.reglas.ErrorValidacion: El plazo de 5 días para reabrir terminó. Registre un ticket nuevo.
+=========================== short test summary info ===========================
+FAILED tests/test_tickets.py::test_cp02_asunto_y_descripcion_obligatorios[asunto-   ]
+FAILED tests/test_tickets.py::test_cp02_asunto_y_descripcion_obligatorios[descripcion-\n\t ]
+FAILED tests/test_tickets.py::test_cp07_usuario_sin_privilegios_no_asigna[ana]
+FAILED tests/test_tickets.py::test_cp07_usuario_sin_privilegios_no_asigna[tecnico1]
+FAILED tests/test_tickets.py::test_cp13_plazo_de_reapertura[5-True] - app.tic...
+======================== 5 failed, 22 passed =========================
