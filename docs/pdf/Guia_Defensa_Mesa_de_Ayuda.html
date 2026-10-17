@@ -1,0 +1,483 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Guía de Defensa Mesa de Ayuda TI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link id="fuente-letra" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap">
+<style id="estilo">/* Hoja de documento centrada sobre fondo neutro; todo en Calibri 12 pt, títulos en negrita con escala fija. */
+:root {
+  --papel: #ffffff;
+  --fondo: #eef1f5;
+  --tinta: #1e2733;
+  --tinta-suave: #556170;
+  --linea: #d3dae3;
+  --marca: #1d3f66;
+  --marca-suave: #e6edf6;
+  --verde: #23704a;
+  --verde-fondo: #e7f4ec;
+  --rojo: #a52a22;
+  --rojo-fondo: #fbeceb;
+  --ambar: #8a5a00;
+  --ambar-fondo: #fdf3dd;
+  --sombra: 0 1px 3px rgba(20, 35, 60, .10);
+  --letra: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --papel: #1b222c; --fondo: #11161d; --tinta: #e3e8ef; --tinta-suave: #a3afbe; --linea: #344050;
+    --marca: #9cc0ea; --marca-suave: #22324a; --verde: #7ccf9f; --verde-fondo: #1b3328;
+    --rojo: #f19a92; --rojo-fondo: #3a2120; --ambar: #e8c06e; --ambar-fondo: #3a2f17;
+    --sombra: 0 1px 3px rgba(0, 0, 0, .4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --papel: #1b222c; --fondo: #11161d; --tinta: #e3e8ef; --tinta-suave: #a3afbe; --linea: #344050;
+  --marca: #9cc0ea; --marca-suave: #22324a; --verde: #7ccf9f; --verde-fondo: #1b3328;
+  --rojo: #f19a92; --rojo-fondo: #3a2120; --ambar: #e8c06e; --ambar-fondo: #3a2f17;
+  --sombra: 0 1px 3px rgba(0, 0, 0, .4);
+}
+
+body {
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra);
+  font-size: 12pt;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 96px;
+}
+#doc {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--papel);
+  box-shadow: var(--sombra);
+  border: 1px solid var(--linea);
+  padding: 48px clamp(18px, 6vw, 72px) 56px;
+}
+#doc:focus { outline: none; }
+body.editando #doc { outline: 2px dashed var(--marca); outline-offset: 4px; }
+
+h1, h2, h3, h4 { font-family: var(--letra); color: var(--marca); text-wrap: balance; line-height: 1.25; }
+h1 { font-size: 20pt; margin: 0 0 8px; }
+h2 { font-size: 16pt; margin: 44px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--linea); text-align: center; }
+h2:first-child { margin-top: 0; }
+h3 { font-size: 13pt; margin: 26px 0 8px; }
+h4 { font-size: 12pt; margin: 18px 0 6px; color: var(--tinta); }
+p, li { font-size: 12pt; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 12px; padding-left: 24px; }
+li { margin-bottom: 4px; }
+a { color: var(--marca); }
+code { font-family: var(--letra); font-size: 12pt; background: var(--marca-suave); padding: 0 4px; border-radius: 3px; }
+strong { color: inherit; }
+
+/* Portada */
+.portada { text-align: center; padding: 30px 0 34px; border-bottom: 2px solid var(--marca); margin-bottom: 26px; }
+.portada .institucion { font-size: 12pt; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-suave); margin-bottom: 26px; }
+.portada h1 { font-size: 24pt; margin-bottom: 6px; }
+.portada .subtitulo { font-size: 14pt; color: var(--tinta-suave); margin-bottom: 34px; }
+.portada dl { display: inline-grid; grid-template-columns: auto auto; gap: 4px 16px; text-align: left; margin: 0; }
+.portada dt { font-weight: bold; }
+.portada dd { margin: 0; }
+
+.indice ol { columns: 2 260px; column-gap: 32px; }
+.indice li { break-inside: avoid; }
+
+/* Tablas */
+.tabla { overflow-x: auto; margin: 10px 0 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 12pt; }
+th, td { border: 1px solid var(--linea); padding: 6px 9px; text-align: left; vertical-align: top; }
+th { background: var(--marca-suave); color: var(--tinta); font-weight: bold; }
+td.num, th.num { text-align: center; font-variant-numeric: tabular-nums; }
+table.ficha th { width: 30%; }
+
+.estado { display: inline-block; padding: 0 8px; border-radius: 10px; font-weight: bold; white-space: nowrap; }
+.paso { color: var(--verde); background: var(--verde-fondo); }
+.fallo { color: var(--rojo); background: var(--rojo-fondo); }
+
+.nota { background: var(--ambar-fondo); color: var(--tinta); border-left: 4px solid var(--ambar); padding: 10px 14px; margin: 12px 0 16px; }
+.nota p:last-child { margin-bottom: 0; }
+.pendiente { background: var(--ambar-fondo); color: var(--ambar); padding: 0 4px; border-radius: 3px; }
+
+figure { margin: 16px 0 22px; }
+figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--linea); }
+figcaption { font-size: 12pt; color: var(--tinta-suave); margin-top: 6px; }
+body.editando figure img { cursor: pointer; }
+body.editando figure img:hover { outline: 3px solid var(--marca); }
+
+.prompt { border: 1px solid var(--linea); background: var(--fondo); padding: 10px 14px; margin: 8px 0 14px; white-space: pre-wrap; }
+
+/* Barra de edición (la crea el script; no forma parte del documento guardado) */
+.herramientas {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--papel); border-top: 1px solid var(--linea); box-shadow: 0 -2px 8px rgba(20, 35, 60, .10);
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center;
+  font-family: var(--letra); font-size: 12pt;
+}
+.herramientas button {
+  font-family: var(--letra); font-size: 12pt; padding: 5px 12px; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--marca); background: var(--papel); color: var(--marca);
+}
+.herramientas button.principal { background: var(--marca); color: var(--papel); }
+.herramientas button:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+.herramientas .grupo { display: flex; flex-wrap: wrap; gap: 6px; }
+.herramientas .estado-guardado { color: var(--tinta-suave); margin-left: 6px; }
+.aviso-borrador { max-width: 860px; margin: 0 auto 12px; background: var(--ambar-fondo); border: 1px solid var(--ambar); padding: 8px 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+@media (max-width: 520px) {
+  #doc { padding-top: 28px; }
+  .portada h1 { font-size: 20pt; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* Botón para guardar como PDF cuando el archivo HTML se abre por fuera de claude.ai */
+.boton-pdf {
+  position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20;
+  font-family: var(--letra); font-size: 12pt; padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  border: 0; background: var(--marca); color: var(--papel); box-shadow: var(--sombra);
+}
+
+/* Impresión y PDF: hoja A4 blanca, márgenes de 2,5 cm, sin barras ni sombras */
+@media print {
+  @page { size: A4; margin: 2.5cm 2.5cm 2.2cm; }
+  :root:not([data-impresion]), :root[data-theme]:not([data-impresion]) {
+    color-scheme: light;
+    --papel: #ffffff; --fondo: #ffffff; --tinta: #000000; --tinta-suave: #404850; --linea: #b9c2cc;
+    --marca: #1d3f66; --marca-suave: #e6edf6; --verde: #1d6340; --verde-fondo: #e7f4ec;
+    --rojo: #9c2019; --rojo-fondo: #fbeceb; --ambar: #7a4f00; --ambar-fondo: #fdf3dd; --sombra: none;
+  }
+  body { background: #fff; padding: 0; }
+  #doc { max-width: none; border: 0; box-shadow: none; padding: 0; outline: none !important; }
+  .herramientas, .aviso-borrador, .boton-pdf { display: none !important; }
+  #doc[data-saltos] h2:not(:first-child) { break-before: page; }
+  h2, h3, h4 { break-after: avoid; }
+  figure, tr, .prompt, .nota { break-inside: avoid; }
+  figure img { max-height: 19cm; width: auto; margin: 0 auto; }
+  .tabla { overflow: visible; }
+  a { color: inherit; text-decoration: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+<article id="doc" data-archivo="Guia_Defensa_Mesa_de_Ayuda">
+
+<section class="portada">
+  <div class="institucion">Ingeniería de Software I · Uso del equipo</div>
+  <h1>Guía para defender el proyecto</h1>
+  <div class="subtitulo">Sistema de gestión de solicitudes de soporte técnico</div>
+</section>
+
+<h2>Antes de la defensa</h2>
+<p>Abran una terminal (PowerShell) en la carpeta <code>soporte-ti</code> y ejecuten esto una sola vez:</p>
+<div class="prompt">.venv\Scripts\activate
+flask --app app iniciar-bd
+python -m pytest -v</div>
+<p>Si al final aparece <strong>27 passed</strong>, todo está listo. Dejen abiertos el informe, la <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">aplicación en vivo</a> y el archivo <code>app/tickets/reglas.py</code> en Visual Studio Code.</p>
+<p>La idea que deben transmitir: <strong>«Construimos el módulo de tickets: cada ticket sigue estados controlados, cada persona solo hace lo que su rol permite, y 18 casos de prueba encontraron 3 defectos que corregimos en ramas de Git».</strong></p>
+
+<h2>Demostración paso a paso</h2>
+<p>Usen la <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">aplicación en vivo</a>, que ya trae los tickets de las capturas. La versión local (<code>flask --app app run</code> y abrir http://127.0.0.1:5000) tiene las mismas pantallas, pero empieza sin tickets. Contraseña de todos: <code>Soporte2026*</code>; en la pantalla de ingreso basta con pulsar el nombre del usuario.</p>
+<ol>
+  <li><strong>Entren como Ana (solicitante).</strong> Registren un ticket escribiendo solo espacios en el asunto: aparece «El campo Asunto es obligatorio». Luego regístrenlo bien y muestren el código TK y el estado Nuevo.</li>
+  <li><strong>Sigan como Ana.</strong> Abran un ticket de Luis (por ejemplo TK-000004): aparece «Acceso no permitido».</li>
+  <li><strong>Entren como Carla (coordinadora).</strong> Filtren por prioridad Alta y asignen el ticket nuevo a Pedro. Señalen que el técnico inactivo no aparece en la lista.</li>
+  <li><strong>Entren como Pedro (técnico).</strong> Pasen el ticket a En progreso. Intenten marcarlo Resuelto sin escribir la solución: aparece el aviso. Luego resuélvanlo con una solución.</li>
+  <li><strong>Vuelvan como Ana.</strong> Cierren el ticket y muestren que ya no hay acciones, pero el historial completo sigue ahí.</li>
+  <li><strong>Entren como Luis.</strong> Abran TK-000002 (resuelto hace 9 días) e intenten reabrirlo: aparece «El plazo de 5 días para reabrir terminó».</li>
+</ol>
+<p class="nota">En la aplicación en vivo, el botón «Restablecer datos de ejemplo» deja todo como al principio.</p>
+
+<h2>Comandos para evaluar el comportamiento</h2>
+<div class="tabla"><table>
+  <thead><tr><th>Comando</th><th>Qué muestra</th><th>Qué decir</th></tr></thead>
+  <tbody>
+    <tr><td><code>python -m pytest -v</code></td><td>Los 18 casos (27 ejecuciones) en verde.</td><td>«Todas las reglas de negocio se comprueban automáticamente.»</td></tr>
+    <tr><td><code>python -m pytest -v -k cp07</code></td><td>Solo el caso de asignación sin permiso.</td><td>«Con -k elegimos un caso por su nombre.»</td></tr>
+    <tr><td><code>python -m pytest -v -k "cp02 or cp13"</code></td><td>Los casos de textos en blanco y de plazo de reapertura.</td><td>«Son pruebas de valores límite.»</td></tr>
+    <tr><td><code>python scripts/medir_rendimiento.py</code></td><td>Carga 30.000 tickets y termina en «CUMPLE» (tarda menos de un minuto).</td><td>«La consulta más lenta tarda menos de medio segundo; el límite es 3.»</td></tr>
+    <tr><td><code>flask --app app respaldar-bd</code></td><td>Crea una copia en la carpeta <code>respaldos</code>.</td><td>«Así se cumple el respaldo pedido en RNF-09.»</td></tr>
+    <tr><td><code>git log --graph --oneline --all</code></td><td>El árbol de ramas y merges.</td><td>«Cada funcionalidad y cada defecto tuvo su propia rama.»</td></tr>
+    <tr><td><code>git show 6dfb6a9</code></td><td>El cambio exacto que corrigió DEF-01 (líneas verdes agregadas).</td><td>«Esta es la validación de rol que faltaba en el servidor.»</td></tr>
+    <tr><td><code>git show c310d6a</code></td><td>El cambio de <code>&lt;</code> a <code>&lt;=</code> del plazo de reapertura.</td><td>«Un solo carácter dejaba por fuera el quinto día.»</td></tr>
+  </tbody>
+</table></div>
+<p>Para salir de <code>git show</code> o <code>git log</code> pulsen la tecla <strong>q</strong>.</p>
+
+<h2>Cambiar el código para mostrar por qué falla</h2>
+<p>Si el docente pide demostrar que las pruebas sirven, hagan uno de estos cambios, guarden el archivo y ejecuten el comando. La prueba fallará y explicarán por qué. Todos estos cambios ya se probaron y dan exactamente el resultado indicado.</p>
+<p><strong>Para dejar todo como estaba</strong> después de cada cambio, ejecuten: <code>git checkout -- app</code> y luego <code>python -m pytest</code> (debe volver a decir 27 passed).</p>
+
+<h3>Quitar el permiso para asignar (DEF-01 / SC-01)</h3>
+<div class="tabla"><table class="ficha"><tbody>
+  <tr><th>Archivo</th><td><code>app/tickets/servicio.py</code>, líneas 113 a 115</td></tr>
+  <tr><th>Cambio</th><td>Poner <code>#</code> al inicio de las tres líneas que empiezan con <code>if not _es_gestor(usuario):</code></td></tr>
+  <tr><th>Comando</th><td><code>python -m pytest -v -k cp07</code></td></tr>
+  <tr><th>Resultado</th><td><strong>2 failed</strong> con <code>assert 302 == 403</code></td></tr>
+  <tr><th>Explicación</th><td>El servidor esperaba responder 403 (prohibido), pero respondió 302 (aceptó y redirigió): un solicitante logró asignar. Ocultar el botón no protege; el servidor debe revisar el rol.</td></tr>
+</tbody></table></div>
+
+<h3>Cambiar el plazo de reapertura (DEF-03 / RN-09)</h3>
+<div class="tabla"><table class="ficha"><tbody>
+  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 86</td></tr>
+  <tr><th>Cambio</th><td><code>return 0 &lt;= dias &lt;= DIAS_REAPERTURA</code> por <code>return 0 &lt;= dias &lt; DIAS_REAPERTURA</code></td></tr>
+  <tr><th>Comando</th><td><code>python -m pytest -v -k cp13</code></td></tr>
+  <tr><th>Resultado</th><td><strong>1 failed, 2 passed</strong>. Falla <code>[5-True]</code> con «El plazo de 5 días para reabrir terminó».</td></tr>
+  <tr><th>Explicación</th><td>El día 0 y el día 6 siguen bien, pero el día 5 queda por fuera. Por eso se prueban los valores límite.</td></tr>
+</tbody></table></div>
+
+<h3>Aceptar textos con solo espacios (DEF-02 / RN-02)</h3>
+<div class="tabla"><table class="ficha"><tbody>
+  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 58</td></tr>
+  <tr><th>Cambio</th><td><code>valor = valor.strip() if isinstance(valor, str) else ""</code> por <code>valor = valor if isinstance(valor, str) else ""</code></td></tr>
+  <tr><th>Comando</th><td><code>python -m pytest -v -k cp02</code></td></tr>
+  <tr><th>Resultado</th><td><strong>2 failed, 2 passed</strong>: «CHECK constraint failed» y «DID NOT RAISE ErrorValidacion».</td></tr>
+  <tr><th>Explicación</th><td>Sin quitar los espacios, «   » parece un texto válido. En el asunto lo detiene la base de datos con un error técnico, y la descripción se guarda en blanco.</td></tr>
+</tbody></table></div>
+
+<h3>Permitir una transición prohibida (RN-05)</h3>
+<div class="tabla"><table class="ficha"><tbody>
+  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 25</td></tr>
+  <tr><th>Cambio</th><td><code>ASIGNADO: (EN_PROGRESO,),</code> por <code>ASIGNADO: (EN_PROGRESO, RESUELTO),</code></td></tr>
+  <tr><th>Comando</th><td><code>python -m pytest -v -k cp09</code></td></tr>
+  <tr><th>Resultado</th><td><strong>1 failed</strong> con «DID NOT RAISE ErrorValidacion».</td></tr>
+  <tr><th>Explicación</th><td>Todas las transiciones están en una sola tabla. Si se agrega una que la regla no permite, la prueba lo detecta. También muestra la cohesión: la regla vive en un solo lugar.</td></tr>
+</tbody></table></div>
+
+<h3>Cambiar el largo máximo del asunto (RNF-10)</h3>
+<div class="tabla"><table class="ficha"><tbody>
+  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 34</td></tr>
+  <tr><th>Cambio</th><td><code>MAX_ASUNTO = 150</code> por <code>MAX_ASUNTO = 100</code></td></tr>
+  <tr><th>Comando</th><td><code>python -m pytest -v -k cp04</code></td></tr>
+  <tr><th>Resultado</th><td><strong>1 failed</strong> con «El campo Asunto admite máximo 100 caracteres».</td></tr>
+  <tr><th>Explicación</th><td>El asunto de 150 caracteres, que antes era válido, ahora se rechaza. Cambiar un número en las reglas cambia el comportamiento de todo el sistema.</td></tr>
+</tbody></table></div>
+
+<h2>Preguntas que pueden hacer</h2>
+<p><strong>¿Por qué implementaron Tickets?</strong> Es el centro del sistema: reúne casi todos los requisitos (RF-03 a RF-11) y reglas de negocio.</p>
+<p><strong>¿Qué es bajo acoplamiento en su proyecto?</strong> Que la encuesta de satisfacción (SC-03) se puede agregar como componente nuevo sin cambiar Tickets.</p>
+<p><strong>¿Por qué SC-02 es perfectivo y no adaptativo?</strong> Adaptativo es cuando cambia el entorno (sistema operativo, leyes). SC-02 es una función nueva para mejorar el servicio.</p>
+<p><strong>¿Por qué pytest muestra 27 si son 18 casos?</strong> Algunos casos prueban varios datos; por ejemplo, CP-13 prueba los días 0, 5 y 6.</p>
+<p><strong>¿Cómo cumplen «sin cambios a medias»?</strong> El estado y el historial se guardan en una sola transacción; CP-15 simula un error y el ticket queda igual.</p>
+<p><strong>¿Cómo se guarda la contraseña?</strong> Cifrada con un hash (scrypt). Se puede comprobar, pero no recuperar.</p>
+<p><strong>¿Qué hizo la IA y qué hicieron ustedes?</strong> La IA generó la mayor parte del código, las pruebas y la documentación. Nosotros revisamos que cumpliera cada regla, ejecutamos las pruebas, analizamos los fallos y validamos las pantallas. Somos responsables de todo el código.</p>
+<p><strong>¿La aplicación en vivo es la misma del repositorio?</strong> Es una copia en el navegador con la misma interfaz y las mismas reglas, para mostrarla sin instalar nada. La versión oficial es la de Flask del repositorio, que es la que se prueba con pytest.</p>
+
+<h2>Nota para el equipo</h2>
+<p class="nota">Los tres defectos estaban en la primera versión que se subió a Git, y las pruebas los detectaron de verdad. Sin embargo, esa versión se escribió con esos errores a propósito, para que el ciclo prueba → defecto → corrección quedara registrado. Si el docente pregunta cómo surgieron, díganlo con claridad: son errores muy comunes (validar solo en la pantalla, no quitar espacios, confundir «menor que» con «menor o igual que») y las pruebas se diseñaron para encontrarlos.</p>
+
+</article>
+<script id="motor">(function () {
+  "use strict";
+  var doc = document.getElementById("doc");
+  if (!doc) return;
+  var RESET = ":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}";
+  var CLAVE = "borrador:" + document.title;
+  var original = doc.innerHTML;
+  var artefacto = null;
+  var editando = false;
+  var temporizador = null;
+
+  function leer() { try { return localStorage.getItem(CLAVE); } catch (e) { return null; } }
+  function escribir(v) { try { if (v === null) localStorage.removeItem(CLAVE); else localStorage.setItem(CLAVE, v); } catch (e) {} }
+
+  var barra = document.createElement("div");
+  barra.className = "herramientas";
+  barra.setAttribute("role", "toolbar");
+  barra.setAttribute("aria-label", "Edición del documento");
+  barra.innerHTML =
+    '<button type="button" class="principal" data-accion="editar" hidden>Editar documento</button>' +
+    '<button type="button" data-accion="descargar" hidden title="Ábralo en su navegador y pulse «Guardar como PDF»">Descargar HTML (para PDF)</button>' +
+    '<span class="grupo" data-modo="edicion" hidden>' +
+      '<button type="button" data-cmd="bold" title="Negrita"><b>N</b></button>' +
+      '<button type="button" data-cmd="italic" title="Cursiva"><i>K</i></button>' +
+      '<button type="button" data-bloque="h2">Título</button>' +
+      '<button type="button" data-bloque="h3">Subtítulo</button>' +
+      '<button type="button" data-bloque="p">Párrafo</button>' +
+      '<button type="button" data-cmd="insertUnorderedList">Viñetas</button>' +
+      '<button type="button" data-accion="fila">Agregar fila</button>' +
+      '<button type="button" class="principal" data-accion="guardar">Guardar cambios</button>' +
+      '<button type="button" data-accion="descartar">Descartar</button>' +
+    '</span>' +
+    '<span class="estado-guardado" aria-live="polite"></span>';
+  var estado = barra.querySelector(".estado-guardado");
+  var grupo = barra.querySelector("[data-modo=edicion]");
+  var botonEditar = barra.querySelector("[data-accion=editar]");
+  var botonDescargar = barra.querySelector("[data-accion=descargar]");
+  var descargas = null;
+  var selector = document.createElement("input");
+  selector.type = "file";
+  selector.accept = "image/*";
+  selector.hidden = true;
+  var imagenObjetivo = null;
+
+  function aviso(texto) { estado.textContent = texto; }
+
+  function modoEdicion(activo) {
+    editando = activo;
+    doc.contentEditable = activo ? "true" : "false";
+    document.body.classList.toggle("editando", activo);
+    grupo.hidden = !activo;
+    botonEditar.hidden = activo || !artefacto;
+    botonDescargar.hidden = activo || !descargas;
+    aviso(activo ? "Modo edición: escriba sobre el texto. Haga clic en una imagen para cambiarla." : "");
+    if (activo) doc.focus();
+  }
+
+  function documentoLimpio() {
+    var copia = doc.cloneNode(true);
+    copia.removeAttribute("contenteditable");
+    copia.querySelectorAll("*").forEach(function (el) {
+      Array.prototype.slice.call(el.attributes).forEach(function (a) {
+        if (a.name === "contenteditable" || a.name === "spellcheck" || a.name === "data-id" || a.name.indexOf("artifact-") === 0) el.removeAttribute(a.name);
+      });
+    });
+    return copia;
+  }
+
+  function paginaCompleta(paraDescarga) {
+    var estilo = document.getElementById("estilo").textContent;
+    var fuente = document.getElementById("fuente-letra");
+    var motor = document.getElementById("motor").textContent;
+    var titulo = document.title.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    var cierre = "</" + "script>";
+    return "<!doctype html>" + (paraDescarga ? "<html lang=\"es\">" : "<html>") + "<head><meta charset=utf8><meta name=viewport content=\"width=device-width,initial-scale=1,viewport-fit=cover\"><style>" + RESET + "</style></head><body>" +
+      "<title>" + titulo + "</title>" +
+      "<meta name=\"claude:viewport-fit-sides\" content=\"cover\">" +
+      (fuente ? "<link id=\"fuente-letra\" rel=\"stylesheet\" href=\"" + fuente.getAttribute("href") + "\">" : "") +
+      "<style id=\"estilo\">" + estilo + "</style>" +
+      documentoLimpio().outerHTML +
+      "<script id=\"motor\">" + motor + cierre +
+      "</body></html>";
+  }
+
+  function guardarBorrador() {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(function () { escribir(doc.innerHTML); aviso("Borrador guardado en este navegador. Use «Guardar cambios» para publicarlo."); }, 800);
+  }
+
+  function guardar() {
+    if (!artefacto) { aviso("Guardar no está disponible en esta vista."); return; }
+    escribir(doc.innerHTML);
+    aviso("Guardando…");
+    artefacto.publish(paginaCompleta()).then(function () {
+      escribir(null);
+      aviso("Cambios guardados. La página se actualizará.");
+    }, function (error) {
+      var codigo = error && error.code;
+      if (codigo === "conflict") aviso("Otra persona guardó una versión más reciente. Su borrador quedó guardado en este navegador.");
+      else if (codigo === "not_writer" || codigo === "not_granted" || codigo === "consent_required" || codigo === "capability_disabled") {
+        aviso("Esta vista es de solo lectura; no se pueden guardar cambios.");
+        modoEdicion(false);
+        botonEditar.hidden = true;
+      } else if (codigo === "too_large") aviso("El documento es demasiado grande para guardarlo. Use imágenes más livianas.");
+      else if (codigo === "rate_limited") aviso("Se guardó muchas veces seguidas. Espere un momento y vuelva a intentarlo.");
+      else aviso("No se pudo guardar en este momento. Su borrador quedó en este navegador; intente de nuevo.");
+    });
+  }
+
+  function descargar() {
+    if (!descargas) return;
+    var nombre = (doc.getAttribute("data-archivo") || "documento") + ".html";
+    aviso("Preparando el archivo…");
+    descargas.save({ filename: nombre, data: paginaCompleta(true) }).then(function () {
+      aviso("Archivo descargado. Ábralo en Chrome o Edge y pulse «Guardar como PDF».");
+    }, function (error) {
+      var codigo = error && error.code;
+      if (codigo === "declined") aviso("Descarga cancelada.");
+      else if (codigo === "rate_limited") aviso("Ya hay una descarga en curso. Espere un momento.");
+      else { aviso("La descarga no está disponible en esta vista."); botonDescargar.hidden = true; descargas = null; }
+    });
+  }
+
+  function agregarFila() {
+    var sel = window.getSelection();
+    var nodo = sel && sel.anchorNode;
+    var fila = nodo && (nodo.nodeType === 1 ? nodo : nodo.parentElement).closest("tr");
+    if (!fila || !doc.contains(fila)) { aviso("Ubique el cursor dentro de una fila de la tabla y vuelva a pulsar «Agregar fila»."); return; }
+    var nueva = fila.cloneNode(true);
+    nueva.querySelectorAll("td, th").forEach(function (c) { c.textContent = ""; });
+    fila.parentNode.insertBefore(nueva, fila.nextSibling);
+    guardarBorrador();
+  }
+
+  barra.addEventListener("mousedown", function (e) { if (e.target.closest("[data-cmd],[data-bloque]")) e.preventDefault(); });
+  barra.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.cmd) { document.execCommand(b.dataset.cmd, false, null); guardarBorrador(); return; }
+    if (b.dataset.bloque) { document.execCommand("formatBlock", false, b.dataset.bloque); guardarBorrador(); return; }
+    var accion = b.dataset.accion;
+    if (accion === "editar") modoEdicion(true);
+    else if (accion === "guardar") guardar();
+    else if (accion === "descargar") descargar();
+    else if (accion === "fila") agregarFila();
+    else if (accion === "descartar") { doc.innerHTML = original; escribir(null); modoEdicion(false); aviso("Cambios descartados."); }
+  });
+
+  doc.addEventListener("input", function () { if (editando) guardarBorrador(); });
+  doc.addEventListener("click", function (e) {
+    if (!editando || e.target.tagName !== "IMG") return;
+    imagenObjetivo = e.target;
+    selector.value = "";
+    selector.click();
+  });
+  selector.addEventListener("change", function () {
+    var archivo = selector.files && selector.files[0];
+    if (!archivo || !imagenObjetivo) return;
+    var lector = new FileReader();
+    lector.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var escala = Math.min(1, 1400 / img.width);
+        var lienzo = document.createElement("canvas");
+        lienzo.width = Math.round(img.width * escala);
+        lienzo.height = Math.round(img.height * escala);
+        lienzo.getContext("2d").drawImage(img, 0, 0, lienzo.width, lienzo.height);
+        imagenObjetivo.src = lienzo.toDataURL("image/png");
+        imagenObjetivo.removeAttribute("width");
+        imagenObjetivo.removeAttribute("height");
+        guardarBorrador();
+      };
+      img.src = lector.result;
+    };
+    lector.readAsDataURL(archivo);
+  });
+
+  var pendiente = leer();
+  if (pendiente && pendiente !== original) {
+    var banda = document.createElement("div");
+    banda.className = "aviso-borrador";
+    banda.innerHTML = '<span>Hay cambios sin publicar guardados en este navegador.</span>' +
+      '<button type="button" data-r="si">Recuperar</button><button type="button" data-r="no">Descartar borrador</button>';
+    banda.addEventListener("click", function (e) {
+      var r = e.target.closest("button");
+      if (!r) return;
+      if (r.dataset.r === "si") { doc.innerHTML = pendiente; modoEdicion(true); }
+      else escribir(null);
+      banda.remove();
+    });
+    doc.parentNode.insertBefore(banda, doc);
+  }
+
+  var claude = window.claude;
+  function mostrarBarra() {
+    if (!barra.parentNode) { document.body.appendChild(barra); document.body.appendChild(selector); }
+    botonEditar.hidden = editando || !artefacto;
+    botonDescargar.hidden = editando || !descargas;
+  }
+  if (claude && typeof claude.use === "function") {
+    claude.use("artifact").then(function (ns) { if (ns) { artefacto = ns; mostrarBarra(); } }, function () {});
+    claude.use("downloads").then(function (ns) { if (ns) { descargas = ns; mostrarBarra(); } }, function () {});
+  } else {
+    // Archivo abierto directamente en el navegador: se ofrece guardar como PDF
+    var botonPdf = document.createElement("button");
+    botonPdf.type = "button";
+    botonPdf.className = "boton-pdf";
+    botonPdf.textContent = "Guardar como PDF";
+    botonPdf.title = "En la ventana de impresión elija «Guardar como PDF» como destino";
+    botonPdf.addEventListener("click", function () { window.print(); });
+    document.body.appendChild(botonPdf);
+  }
+})();
+</script>
+</body></html>
