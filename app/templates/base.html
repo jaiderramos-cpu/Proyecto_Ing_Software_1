@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Soporte técnico{% endblock %} · Mesa de ayuda</title>
+  <style>
+    :root { --tinta:#1f2a37; --suave:#5b6675; --linea:#d9dee5; --fondo:#f6f7f9; --marca:#1d4e89; --ok:#2e7d4f; --error:#b3261e; --aviso:#8a5a00; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size:12pt; color:var(--tinta); background:var(--fondo); line-height:1.45; }
+    header { background:#fff; border-bottom:1px solid var(--linea); }
+    .barra { max-width:1080px; margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+    .barra .nombre { font-weight:bold; color:var(--marca); font-size:14pt; margin-right:auto; }
+    .barra a { color:var(--tinta); text-decoration:none; }
+    .barra a:hover { text-decoration:underline; }
+    .quien { color:var(--suave); }
+    main { max-width:1080px; margin:0 auto; padding:20px; }
+    h1 { font-size:16pt; margin:0 0 14px; }
+    h2 { font-size:13pt; margin:22px 0 8px; }
+    .panel { background:#fff; border:1px solid var(--linea); border-radius:6px; padding:16px 18px; margin-bottom:16px; }
+    table { width:100%; border-collapse:collapse; background:#fff; }
+    th, td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--linea); vertical-align:top; }
+    th { background:#eef1f5; font-weight:bold; }
+    label { display:block; font-weight:bold; margin:10px 0 4px; }
+    input, select, textarea, button { font-family:inherit; font-size:12pt; }
+    input[type=text], input[type=email], input[type=password], input[type=date], select, textarea { width:100%; padding:6px 8px; border:1px solid #b9c0ca; border-radius:4px; background:#fff; }
+    textarea { min-height:90px; }
+    button, .boton { display:inline-block; background:var(--marca); color:#fff; border:0; border-radius:4px; padding:7px 14px; cursor:pointer; text-decoration:none; }
+    button.secundario, .boton.secundario { background:#fff; color:var(--marca); border:1px solid var(--marca); }
+    button.peligro { background:var(--error); }
+    .mensaje { padding:9px 12px; border-radius:4px; margin-bottom:12px; border:1px solid; }
+    .mensaje.ok { color:var(--ok); background:#eaf5ee; border-color:#b7dcc4; }
+    .mensaje.error { color:var(--error); background:#fbeceb; border-color:#efc2bf; }
+    .mensaje.aviso { color:var(--aviso); background:#fdf5e4; border-color:#ecd59f; }
+    .estado { display:inline-block; padding:1px 8px; border-radius:10px; background:#eef1f5; border:1px solid var(--linea); white-space:nowrap; }
+    .filtros { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; align-items:end; }
+    .filtros label { margin-top:0; }
+    .dato { display:grid; grid-template-columns:180px 1fr; gap:4px 12px; }
+    .dato dt { font-weight:bold; color:var(--suave); }
+    .dato dd { margin:0; }
+    .acciones { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:14px; }
+    .acciones form { background:#fff; border:1px solid var(--linea); border-radius:6px; padding:12px 14px; }
+    .acciones h3 { font-size:12pt; margin:0 0 6px; }
+    .historial li { margin-bottom:8px; }
+    .suave { color:var(--suave); }
+    .paginacion { margin-top:10px; display:flex; gap:10px; align-items:center; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="barra">
+      <span class="nombre">Mesa de ayuda · Soporte técnico</span>
+      {% if g.usuario %}
+        <a href="{{ url_for('tickets.listar') }}">Tickets</a>
+        <a href="{{ url_for('tickets.nuevo') }}">Registrar ticket</a>
+        <span class="quien">{{ g.usuario.nombre }} ({{ g.usuario.rol|capitalize }})</span>
+        <form method="post" action="{{ url_for('autenticacion.logout') }}" style="margin:0">
+          <button class="secundario" type="submit">Cerrar sesión</button>
+        </form>
+      {% endif %}
+    </div>
+  </header>
+  <main>
+    {% for categoria, texto in get_flashed_messages(with_categories=true) %}
+      <div class="mensaje {{ categoria }}">{{ texto }}</div>
+    {% endfor %}
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>
