@@ -1,0 +1,452 @@
+<title>Mesa de Ayuda en Vivo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  /* Réplica visual de la aplicación Flask (plantilla base.html): un solo tema claro, igual a las capturas. */
+  :root { --tinta:#1f2a37; --suave:#5b6675; --linea:#d9dee5; --fondo:#f6f7f9; --papel:#ffffff; --marca:#1d4e89; --ok:#2e7d4f; --error:#b3261e; --aviso:#8a5a00; }
+  * { box-sizing: border-box; }
+  body { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size:12pt; color:var(--tinta); background:var(--fondo); line-height:1.45; }
+  .demo { background:#e8eef6; color:var(--tinta); border-bottom:1px solid #c9d6e6; padding:7px max(16px, env(safe-area-inset-right, 0px)) 7px max(16px, env(safe-area-inset-left, 0px)); }
+  .demo .fila { max-width:1080px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:space-between; }
+  header { background:var(--papel); border-bottom:1px solid var(--linea); }
+  .barra { max-width:1080px; margin:0 auto; padding:10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); display:flex; align-items:center; gap:10px 18px; flex-wrap:wrap; }
+  .barra .nombre { font-weight:bold; color:var(--marca); font-size:14pt; margin-right:auto; }
+  .barra a { color:var(--tinta); text-decoration:none; }
+  .barra a:hover { text-decoration:underline; }
+  .quien { color:var(--suave); }
+  main { max-width:1080px; margin:0 auto; padding:20px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)); }
+  h1 { font-size:16pt; margin:0 0 14px; }
+  h2 { font-size:13pt; margin:22px 0 8px; }
+  h3 { font-size:12pt; margin:0 0 6px; }
+  .panel { background:var(--papel); border:1px solid var(--linea); border-radius:6px; padding:16px 18px; margin-bottom:16px; }
+  .tabla { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; background:var(--papel); }
+  th, td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--linea); vertical-align:top; }
+  th { background:#eef1f5; font-weight:bold; }
+  label { display:block; font-weight:bold; margin:10px 0 4px; }
+  input, select, textarea, button { font-family:inherit; font-size:12pt; }
+  input[type=text], input[type=email], input[type=password], input[type=date], select, textarea { width:100%; padding:6px 8px; border:1px solid #b9c0ca; border-radius:4px; background:#fff; color:var(--tinta); }
+  textarea { min-height:90px; }
+  button, .boton { display:inline-block; background:var(--marca); color:#fff; border:0; border-radius:4px; padding:7px 14px; cursor:pointer; text-decoration:none; }
+  button.secundario, .boton.secundario { background:#fff; color:var(--marca); border:1px solid var(--marca); }
+  button.peligro { background:var(--error); }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid var(--marca); outline-offset:2px; }
+  .mensaje { padding:9px 12px; border-radius:4px; margin-bottom:12px; border:1px solid; }
+  .mensaje.ok { color:var(--ok); background:#eaf5ee; border-color:#b7dcc4; }
+  .mensaje.error { color:var(--error); background:#fbeceb; border-color:#efc2bf; }
+  .mensaje.aviso { color:var(--aviso); background:#fdf5e4; border-color:#ecd59f; }
+  .estado { display:inline-block; padding:1px 8px; border-radius:10px; background:#eef1f5; border:1px solid var(--linea); white-space:nowrap; }
+  .filtros { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; align-items:end; }
+  .filtros label { margin-top:0; }
+  .dato { display:grid; grid-template-columns:180px 1fr; gap:4px 12px; margin:0; }
+  .dato dt { font-weight:bold; color:var(--suave); }
+  .dato dd { margin:0; }
+  .acciones { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; }
+  .acciones form { background:var(--papel); border:1px solid var(--linea); border-radius:6px; padding:12px 14px; }
+  .historial li { margin-bottom:8px; }
+  .suave { color:var(--suave); }
+  .accesos { display:flex; flex-wrap:wrap; gap:6px; }
+  .accesos button { padding:4px 10px; }
+  @media (max-width:560px) { .dato { grid-template-columns:1fr; } }
+</style>
+
+<div class="demo"><div class="fila">
+  <span>Demostración en el navegador con la misma interfaz y las mismas reglas de la aplicación del repositorio. Los datos se guardan solo en este navegador.</span>
+  <button type="button" class="secundario" id="reiniciar">Restablecer datos de ejemplo</button>
+</div></div>
+<header><div class="barra" id="barra"><span class="nombre">Mesa de ayuda · Soporte técnico</span></div></header>
+<main id="vista"><p class="suave">Cargando la aplicación…</p></main>
+
+<script>
+(function () {
+  "use strict";
+  // ---------------- reglas (copia de app/tickets/reglas.py)
+  var PRIORIDADES = ["Baja", "Media", "Alta", "Crítica"];
+  var CATEGORIAS = ["Hardware", "Software", "Red", "Accesos", "Correo", "Otro"];
+  var NUEVO = "Nuevo", ASIGNADO = "Asignado", EN_PROGRESO = "En progreso", PENDIENTE = "Pendiente del solicitante",
+      RESUELTO = "Resuelto", CERRADO = "Cerrado", CANCELADO = "Cancelado";
+  var ESTADOS = [NUEVO, ASIGNADO, EN_PROGRESO, PENDIENTE, RESUELTO, CERRADO, CANCELADO];
+  var FINALES = [CERRADO, CANCELADO];
+  var ABIERTOS = [NUEVO, ASIGNADO, EN_PROGRESO, PENDIENTE];
+  var TRANSICIONES = {};
+  TRANSICIONES[NUEVO] = [ASIGNADO, CANCELADO];
+  TRANSICIONES[ASIGNADO] = [EN_PROGRESO];
+  TRANSICIONES[EN_PROGRESO] = [PENDIENTE, RESUELTO];
+  TRANSICIONES[PENDIENTE] = [EN_PROGRESO, RESUELTO];
+  TRANSICIONES[RESUELTO] = [CERRADO, EN_PROGRESO];
+  TRANSICIONES[CERRADO] = [];
+  TRANSICIONES[CANCELADO] = [];
+  var DIAS_REAPERTURA = 5, MAX_ASUNTO = 150, MAX_DESCRIPCION = 4000, MAX_TEXTO = 2000;
+  var CONTRASENA = "Soporte2026*";
+  var ROLES = { administrador: "Administrador", coordinador: "Coordinador", tecnico: "Técnico", solicitante: "Solicitante" };
+  var CLAVE = "mesa-ayuda-demo-v1";
+
+  function falla(tipo, mensaje) { var e = new Error(mensaje); e.tipo = tipo; return e; }
+  function validacion(m) { return falla("validacion", m); }
+  function validarTexto(v, campo, max) {
+    v = typeof v === "string" ? v.trim() : "";
+    if (!v) throw validacion("El campo «" + campo + "» es obligatorio.");
+    if (v.length > max) throw validacion("El campo «" + campo + "» admite máximo " + max + " caracteres.");
+    return v;
+  }
+  function validarOpcion(v, campo, ops) {
+    if (ops.indexOf(v) < 0) throw validacion("El valor de «" + campo + "» no es válido. Opciones: " + ops.join(", ") + ".");
+    return v;
+  }
+  function dosDigitos(n) { return (n < 10 ? "0" : "") + n; }
+  function texto(fecha) {
+    return fecha.getFullYear() + "-" + dosDigitos(fecha.getMonth() + 1) + "-" + dosDigitos(fecha.getDate()) + " " +
+      dosDigitos(fecha.getHours()) + ":" + dosDigitos(fecha.getMinutes()) + ":" + dosDigitos(fecha.getSeconds());
+  }
+  function leerFecha(t) { var p = t.split(/[- :]/).map(Number); return new Date(p[0], p[1] - 1, p[2], p[3], p[4], p[5]); }
+  function puedeReabrir(resuelto, ahora) {
+    var a = Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+    var b = Date.UTC(resuelto.getFullYear(), resuelto.getMonth(), resuelto.getDate());
+    var dias = Math.round((a - b) / 864e5);
+    return dias >= 0 && dias <= DIAS_REAPERTURA;
+  }
+
+  // ---------------- datos
+  var bd = null;
+  function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(bd)); } catch (e) {} }
+  function usuario(id) { return bd.usuarios.filter(function (u) { return u.id === id; })[0] || null; }
+  function ticket(id) { return bd.tickets.filter(function (t) { return t.id === id; })[0] || null; }
+  function historial(id, uid, tipo, txt, fecha, antes, despues) {
+    bd.historial.push({ ticket: id, usuario: uid, tipo: tipo, texto: txt || null, fecha: fecha, antes: antes || null, despues: despues || null });
+  }
+
+  // ---------------- servicio (copia de app/tickets/servicio.py)
+  function esGestor(u) { return u.rol === "administrador" || u.rol === "coordinador"; }
+  function esDueno(u, t) { return u.rol === "solicitante" && t.solicitante === u.id; }
+  function esTecnicoAsignado(u, t) { return u.rol === "tecnico" && t.tecnico === u.id; }
+  function cargar(id) { var t = ticket(Number(id)); if (!t) throw falla("noexiste", "El ticket solicitado no existe."); return t; }
+  function puedeVer(u, t) { return u.rol !== "solicitante" || t.solicitante === u.id; }
+  function cambiarEstado(u, t, nuevo, txt, ahora, otros) {
+    if ((TRANSICIONES[t.estado] || []).indexOf(nuevo) < 0) throw validacion("No se puede pasar de «" + t.estado + "» a «" + nuevo + "».");
+    var antes = t.estado;
+    t.estado = nuevo;
+    Object.keys(otros || {}).forEach(function (k) { t[k] = otros[k]; });
+    historial(t.id, u.id, "cambio_estado", txt, texto(ahora), antes, nuevo);
+    guardar();
+  }
+  var servicio = {
+    crear: function (u, d, ahora) {
+      var limpio = {
+        asunto: validarTexto(d.asunto, "Asunto", MAX_ASUNTO),
+        descripcion: validarTexto(d.descripcion, "Descripción", MAX_DESCRIPCION),
+        categoria: validarOpcion(d.categoria, "Categoría", CATEGORIAS),
+        prioridad: validarOpcion(d.prioridad, "Prioridad", PRIORIDADES)
+      };
+      var id = ++bd.secuencia, fecha = texto(ahora || new Date());
+      bd.tickets.push({ id: id, codigo: "TK-" + String(id).padStart(6, "0"), solicitante: u.id, tecnico: null,
+        asunto: limpio.asunto, descripcion: limpio.descripcion, categoria: limpio.categoria, prioridad: limpio.prioridad,
+        estado: NUEVO, creado: fecha, resuelto: null, solucion: null, motivo: null });
+      historial(id, u.id, "creacion", "Ticket registrado.", fecha, null, NUEVO);
+      guardar();
+      return id;
+    },
+    asignar: function (u, id, tecnicoId, ahora) {
+      if (!esGestor(u)) throw falla("permiso", "Solo un administrador o coordinador puede asignar tickets.");
+      var t = cargar(id), tec = usuario(Number(tecnicoId));
+      if (!tec || tec.rol !== "tecnico" || !tec.activo) throw validacion("Solo se puede asignar el ticket a un técnico activo.");
+      cambiarEstado(u, t, ASIGNADO, "Asignado a " + tec.nombre + ".", ahora || new Date(), { tecnico: tec.id });
+    },
+    cambiarEstado: function (u, id, nuevo, txt, ahora) {
+      var t = cargar(id);
+      if (!esTecnicoAsignado(u, t)) throw falla("permiso", "Solo el técnico asignado puede cambiar el estado de este ticket.");
+      if ([EN_PROGRESO, PENDIENTE, RESUELTO].indexOf(nuevo) < 0 || t.estado === RESUELTO) throw validacion("No se puede pasar de «" + t.estado + "» a «" + nuevo + "».");
+      txt = (txt || "").trim();
+      ahora = ahora || new Date();
+      if (nuevo === RESUELTO) {
+        var solucion = validarTexto(txt, "Descripción de la solución", MAX_TEXTO);
+        cambiarEstado(u, t, RESUELTO, solucion, ahora, { solucion: solucion, resuelto: texto(ahora) });
+      } else {
+        if (txt.length > MAX_TEXTO) throw validacion("El comentario admite máximo " + MAX_TEXTO + " caracteres.");
+        cambiarEstado(u, t, nuevo, txt || null, ahora);
+      }
+    },
+    comentar: function (u, id, txt, ahora) {
+      var t = cargar(id);
+      if (!(esTecnicoAsignado(u, t) || esGestor(u))) throw falla("permiso", "Solo el técnico asignado o un coordinador puede comentar este ticket.");
+      if (FINALES.indexOf(t.estado) >= 0) throw validacion("El ticket está en un estado final y no admite cambios.");
+      historial(t.id, u.id, "comentario", validarTexto(txt, "Comentario", MAX_TEXTO), texto(ahora || new Date()));
+      guardar();
+    },
+    complementar: function (u, id, txt, ahora) {
+      var t = cargar(id);
+      if (!esDueno(u, t)) throw falla("permiso", "Solo el solicitante puede complementar su propio ticket.");
+      if (ABIERTOS.indexOf(t.estado) < 0) throw validacion("Solo se puede agregar información a tickets abiertos.");
+      historial(t.id, u.id, "complemento", validarTexto(txt, "Información complementaria", MAX_TEXTO), texto(ahora || new Date()));
+      guardar();
+    },
+    cancelar: function (u, id, motivo, ahora) {
+      var t = cargar(id);
+      if (!esDueno(u, t)) throw falla("permiso", "Solo el solicitante puede cancelar su propio ticket.");
+      if (t.estado !== NUEVO) throw validacion("Solo se pueden cancelar tickets en estado «Nuevo».");
+      motivo = validarTexto(motivo, "Motivo de cancelación", MAX_TEXTO);
+      cambiarEstado(u, t, CANCELADO, motivo, ahora || new Date(), { motivo: motivo });
+    },
+    reabrir: function (u, id, motivo, ahora) {
+      var t = cargar(id);
+      if (!(esDueno(u, t) || esGestor(u))) throw falla("permiso", "Solo el solicitante o un coordinador puede reabrir este ticket.");
+      if (t.estado !== RESUELTO) throw validacion("Solo se pueden reabrir tickets en estado «Resuelto».");
+      ahora = ahora || new Date();
+      if (!puedeReabrir(leerFecha(t.resuelto), ahora)) throw validacion("El plazo de " + DIAS_REAPERTURA + " días para reabrir terminó. Registre un ticket nuevo.");
+      motivo = validarTexto(motivo, "Motivo de reapertura", MAX_TEXTO);
+      cambiarEstado(u, t, EN_PROGRESO, "Reabierto: " + motivo, ahora, { resuelto: null });
+    },
+    cerrar: function (u, id, ahora) {
+      var t = cargar(id);
+      if (!(esDueno(u, t) || esGestor(u))) throw falla("permiso", "Solo el solicitante o un coordinador puede cerrar este ticket.");
+      cambiarEstado(u, t, CERRADO, "Solución confirmada; ticket cerrado.", ahora || new Date());
+    },
+    listar: function (u, f) {
+      var limpio = {};
+      [["estado", ESTADOS, "Estado"], ["categoria", CATEGORIAS, "Categoria"], ["prioridad", PRIORIDADES, "Prioridad"]].forEach(function (c) {
+        if (f[c[0]]) limpio[c[0]] = validarOpcion(f[c[0]], c[2], c[1]);
+      });
+      ["desde", "hasta"].forEach(function (c) {
+        if (f[c] && !/^\d{4}-\d{2}-\d{2}$/.test(f[c])) throw validacion("Las fechas deben tener el formato AAAA-MM-DD.");
+      });
+      return bd.tickets.filter(function (t) {
+        if (u.rol === "solicitante" && t.solicitante !== u.id) return false;
+        if (u.rol === "tecnico" && f.mios && t.tecnico !== u.id) return false;
+        if (limpio.estado && t.estado !== limpio.estado) return false;
+        if (limpio.categoria && t.categoria !== limpio.categoria) return false;
+        if (limpio.prioridad && t.prioridad !== limpio.prioridad) return false;
+        if (f.desde && t.creado < f.desde + " 00:00:00") return false;
+        if (f.hasta && t.creado > f.hasta + " 23:59:59") return false;
+        return true;
+      }).sort(function (a, b) { return a.creado < b.creado ? 1 : a.creado > b.creado ? -1 : b.id - a.id; });
+    }
+  };
+
+  // ---------------- datos de ejemplo (los mismos de las capturas del informe)
+  function sembrar() {
+    bd = { usuarios: [], tickets: [], historial: [], secuencia: 0 };
+    [["Administrador General", "admin@soporte.local", "administrador", true],
+     ["Carla Coordinadora", "coordinador@soporte.local", "coordinador", true],
+     ["Pedro Técnico", "tecnico1@soporte.local", "tecnico", true],
+     ["Sofía Técnica", "tecnico2@soporte.local", "tecnico", true],
+     ["Mario Técnico (inactivo)", "tecnico3@soporte.local", "tecnico", false],
+     ["Ana Solicitante", "ana@soporte.local", "solicitante", true],
+     ["Luis Solicitante", "luis@soporte.local", "solicitante", true]].forEach(function (d, i) {
+      bd.usuarios.push({ id: i + 1, nombre: d[0], correo: d[1], rol: d[2], activo: d[3] });
+    });
+    var U = {}; bd.usuarios.forEach(function (u) { U[u.correo.split("@")[0]] = u; });
+    var hoy = new Date(); hoy.setMilliseconds(0);
+    function hace(dias, horas) { return new Date(hoy.getTime() - (dias * 24 + (horas || 0)) * 3600e3); }
+    function crear(q, a, d, c, p, cuando) { return servicio.crear(U[q], { asunto: a, descripcion: d, categoria: c, prioridad: p }, cuando); }
+    var s = servicio;
+    var t1 = crear("ana", "No puedo ingresar al correo institucional", "Desde ayer el correo me pide la contraseña una y otra vez.", "Correo", "Alta", hace(12));
+    s.asignar(U.coordinador, t1, U.tecnico1.id, hace(12, -1));
+    s.cambiarEstado(U.tecnico1, t1, EN_PROGRESO, "Revisando la cuenta en el servidor de correo.", hace(12, -2));
+    s.cambiarEstado(U.tecnico1, t1, RESUELTO, "Se desbloqueó la cuenta y se restableció la contraseña.", hace(11));
+    s.cerrar(U.ana, t1, hace(10));
+    var t2 = crear("luis", "La impresora imprime hojas en blanco", "La impresora de contabilidad saca las hojas sin tinta.", "Hardware", "Media", hace(15));
+    s.asignar(U.coordinador, t2, U.tecnico2.id, hace(15, -1));
+    s.cambiarEstado(U.tecnico2, t2, EN_PROGRESO, "", hace(15, -2));
+    s.cambiarEstado(U.tecnico2, t2, RESUELTO, "Se cambió el cartucho de tinta.", hace(9));
+    var t3 = crear("ana", "El computador se reinicia solo", "El equipo de la oficina 204 se reinicia varias veces al día, sobre todo al abrir hojas de cálculo grandes.", "Hardware", "Alta", hace(3));
+    s.asignar(U.coordinador, t3, U.tecnico1.id, hace(3, -1));
+    s.cambiarEstado(U.tecnico1, t3, EN_PROGRESO, "Se revisarán la fuente de poder y la temperatura.", hace(2));
+    s.comentar(U.tecnico1, t3, "La temperatura del procesador llega a 95 °C. Se programa limpieza.", hace(1));
+    s.complementar(U.ana, t3, "Hoy se reinició dos veces antes de las 10 a. m.", hace(0, 3));
+    crear("luis", "Sin acceso a la carpeta compartida de Compras", "Al abrir \\\\servidor\\compras aparece 'acceso denegado'.", "Accesos", "Crítica", hace(0, 2));
+    crear("ana", "Instalar programa de firma digital", "Necesito el programa para firmar documentos electrónicos.", "Software", "Baja", hace(1, 5));
+    var t6 = crear("luis", "Internet lento en la sala de reuniones", "La red inalámbrica de la sala 3 se desconecta durante las videollamadas.", "Red", "Media", hace(2, 4));
+    s.asignar(U.admin, t6, U.tecnico2.id, hace(2, 3));
+    var t7 = crear("ana", "Error al generar reporte en el sistema contable", "El módulo de reportes muestra 'tiempo de espera agotado'.", "Software", "Alta", hace(4));
+    s.asignar(U.coordinador, t7, U.tecnico1.id, hace(4, -1));
+    s.cambiarEstado(U.tecnico1, t7, EN_PROGRESO, "", hace(3, 20));
+    s.cambiarEstado(U.tecnico1, t7, PENDIENTE, "¿Qué rango de fechas usaba al generar el reporte?", hace(3, 10));
+    var t8 = crear("luis", "Cambiar el mouse", "El mouse hace doble clic solo.", "Hardware", "Baja", hace(5));
+    s.cancelar(U.luis, t8, "Encontré un mouse de repuesto en el área.", hace(5, -2));
+    guardar();
+  }
+  try { bd = JSON.parse(localStorage.getItem(CLAVE)); } catch (e) { bd = null; }
+  if (!bd || !bd.usuarios) sembrar();
+
+  // ---------------- interfaz
+  var actual = null;
+  try { actual = usuario(Number(sessionStorage.getItem(CLAVE + ":sesion"))) || null; } catch (e) {}
+  var mensajes = [];
+  var vista = document.getElementById("vista");
+  var barra = document.getElementById("barra");
+  function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function avisar(tipo, txt) { mensajes.push([tipo, txt]); }
+  function sesion(u) { actual = u; try { if (u) sessionStorage.setItem(CLAVE + ":sesion", u.id); else sessionStorage.removeItem(CLAVE + ":sesion"); } catch (e) {} }
+  function ir(ruta) { if (location.hash === ruta) dibujar(); else location.hash = ruta; }
+  function opciones(lista, elegido, vacio) {
+    return (vacio ? '<option value="">' + vacio + "</option>" : "") + lista.map(function (o) {
+      return "<option" + (o === elegido ? " selected" : "") + ">" + esc(o) + "</option>";
+    }).join("");
+  }
+  function pintar(html) {
+    var avisos = mensajes.map(function (m) { return '<div class="mensaje ' + m[0] + '">' + esc(m[1]) + "</div>"; }).join("");
+    mensajes = [];
+    vista.innerHTML = avisos + html;
+    barra.innerHTML = '<span class="nombre">Mesa de ayuda · Soporte técnico</span>' + (actual ?
+      '<a href="#/tickets">Tickets</a><a href="#/nuevo">Registrar ticket</a><span class="quien">' + esc(actual.nombre) + " (" + ROLES[actual.rol] + ")</span>" +
+      '<button type="button" class="secundario" id="salir">Cerrar sesión</button>' : "");
+    var salir = document.getElementById("salir");
+    if (salir) salir.onclick = function () { sesion(null); avisar("ok", "Sesión cerrada correctamente."); ir("#/login"); };
+  }
+  function errorPagina(titulo, txt) {
+    pintar('<div class="panel"><h1>' + esc(titulo) + "</h1><p>" + esc(txt) + '</p><p><a class="boton secundario" href="#/tickets">Volver al inicio</a></p></div>');
+  }
+
+  function vistaLogin(correo) {
+    pintar('<div class="panel" style="max-width:440px; margin:30px auto;"><h1>Iniciar sesión</h1>' +
+      '<p class="suave">Ingrese con el correo y la contraseña que le entregó el área de soporte.</p>' +
+      '<form id="f-login"><label for="correo">Correo electrónico</label><input type="email" id="correo" name="correo" required value="' + esc(correo || "") + '">' +
+      '<label for="contrasena">Contraseña</label><input type="password" id="contrasena" name="contrasena" required>' +
+      '<p><button type="submit">Ingresar</button></p></form>' +
+      '<p class="suave" style="margin-bottom:6px">Usuarios de prueba (contraseña <strong>Soporte2026*</strong>). Pulse uno para llenar el formulario:</p>' +
+      '<div class="accesos">' + bd.usuarios.map(function (u) {
+        return '<button type="button" class="secundario" data-correo="' + esc(u.correo) + '">' + esc(u.nombre.replace(" (inactivo)", "")) + " · " + ROLES[u.rol] + (u.activo ? "" : " inactivo") + "</button>";
+      }).join("") + "</div></div>");
+    vista.querySelectorAll("[data-correo]").forEach(function (b) {
+      b.onclick = function () { document.getElementById("correo").value = b.dataset.correo; document.getElementById("contrasena").value = CONTRASENA; document.getElementById("contrasena").focus(); };
+    });
+    document.getElementById("f-login").onsubmit = function (e) {
+      e.preventDefault();
+      var c = this.correo.value.trim().toLowerCase(), p = this.contrasena.value;
+      var u = bd.usuarios.filter(function (x) { return x.correo === c; })[0];
+      if (!u || !u.activo || p !== CONTRASENA) { avisar("error", "Correo o contraseña incorrectos."); vistaLogin(c); return; }
+      sesion(u);
+      ir("#/tickets");
+    };
+  }
+
+  function leerFiltros(q) {
+    var p = new URLSearchParams(q || "");
+    return { estado: p.get("estado") || "", categoria: p.get("categoria") || "", prioridad: p.get("prioridad") || "", desde: p.get("desde") || "", hasta: p.get("hasta") || "", mios: p.get("mios") || "" };
+  }
+  function vistaLista(q) {
+    var f = leerFiltros(q), filas = [];
+    try { filas = servicio.listar(actual, f); } catch (e) { avisar("error", e.message); }
+    pintar("<h1>" + (actual.rol === "solicitante" ? "Mis tickets" : "Tickets de soporte") + "</h1>" +
+      '<form class="panel filtros" id="f-filtros">' +
+      '<div><label for="estado">Estado</label><select id="estado" name="estado">' + opciones(ESTADOS, f.estado, "Todos") + "</select></div>" +
+      '<div><label for="categoria">Categoría</label><select id="categoria" name="categoria">' + opciones(CATEGORIAS, f.categoria, "Todas") + "</select></div>" +
+      '<div><label for="prioridad">Prioridad</label><select id="prioridad" name="prioridad">' + opciones(PRIORIDADES, f.prioridad, "Todas") + "</select></div>" +
+      '<div><label for="desde">Desde</label><input type="date" id="desde" name="desde" value="' + esc(f.desde) + '"></div>' +
+      '<div><label for="hasta">Hasta</label><input type="date" id="hasta" name="hasta" value="' + esc(f.hasta) + '"></div>' +
+      (actual.rol === "tecnico" ? '<div><label><input type="checkbox" name="mios" value="1"' + (f.mios ? " checked" : "") + "> Solo asignados a mí</label></div>" : "") +
+      '<div><button type="submit">Filtrar</button> <a class="boton secundario" href="#/tickets">Limpiar</a></div></form>' +
+      '<p class="suave">' + filas.length + " ticket(s) encontrados.</p>" +
+      '<div class="tabla"><table><thead><tr><th>Código</th><th>Asunto</th><th>Categoría</th><th>Prioridad</th><th>Estado</th><th>Solicitante</th><th>Técnico</th><th>Creado</th></tr></thead><tbody>' +
+      (filas.length ? filas.map(function (t) {
+        var tec = t.tecnico ? usuario(t.tecnico) : null;
+        return '<tr><td><a href="#/ticket/' + t.id + '">' + t.codigo + "</a></td><td>" + esc(t.asunto) + "</td><td>" + esc(t.categoria) + "</td><td>" + esc(t.prioridad) +
+          '</td><td><span class="estado">' + esc(t.estado) + "</span></td><td>" + esc(usuario(t.solicitante).nombre) + "</td><td>" + (tec ? esc(tec.nombre) : "—") + "</td><td>" + t.creado.slice(0, 16) + "</td></tr>";
+      }).join("") : '<tr><td colspan="8">No hay tickets que coincidan con los filtros.</td></tr>') + "</tbody></table></div>");
+    document.getElementById("f-filtros").onsubmit = function (e) {
+      e.preventDefault();
+      var p = new URLSearchParams();
+      new FormData(this).forEach(function (v, k) { if (v) p.set(k, v); });
+      ir("#/tickets" + (p.toString() ? "?" + p.toString() : ""));
+    };
+  }
+
+  function vistaNuevo(datos) {
+    datos = datos || { asunto: "", descripcion: "", categoria: "", prioridad: "Media" };
+    pintar('<h1>Registrar un ticket</h1><form class="panel" id="f-nuevo" style="max-width:720px">' +
+      '<p class="suave">Los campos marcados con * son obligatorios. La fecha de creación se registra automáticamente.</p>' +
+      '<label for="asunto">Asunto *</label><input type="text" id="asunto" name="asunto" maxlength="' + MAX_ASUNTO + '" value="' + esc(datos.asunto) + '">' +
+      '<label for="descripcion">Descripción *</label><textarea id="descripcion" name="descripcion" maxlength="' + MAX_DESCRIPCION + '">' + esc(datos.descripcion) + "</textarea>" +
+      '<label for="categoria-n">Categoría *</label><select id="categoria-n" name="categoria">' + opciones(CATEGORIAS, datos.categoria, "Seleccione…") + "</select>" +
+      '<label for="prioridad-n">Prioridad *</label><select id="prioridad-n" name="prioridad">' + opciones(PRIORIDADES, datos.prioridad) + "</select>" +
+      '<p><button type="submit">Registrar ticket</button> <a class="boton secundario" href="#/tickets">Cancelar</a></p></form>');
+    document.getElementById("f-nuevo").onsubmit = function (e) {
+      e.preventDefault();
+      var d = { asunto: this.asunto.value, descripcion: this.descripcion.value, categoria: this.categoria.value, prioridad: this.prioridad.value };
+      try {
+        var id = servicio.crear(actual, d);
+        avisar("ok", "Ticket TK-" + String(id).padStart(6, "0") + " registrado correctamente.");
+        ir("#/ticket/" + id);
+      } catch (err) { avisar("error", err.message); vistaNuevo(d); }
+    };
+  }
+
+  function formulario(id, titulo, cuerpo, boton, clase) {
+    return '<form data-accion="' + id + '"><h3>' + titulo + "</h3>" + cuerpo + '<p><button type="submit"' + (clase ? ' class="' + clase + '"' : "") + ">" + boton + "</button></p></form>";
+  }
+  function vistaDetalle(id) {
+    var t;
+    try { t = cargar(id); if (!puedeVer(actual, t)) throw falla("permiso", "Solo puede consultar sus propios tickets."); }
+    catch (e) { return e.tipo === "permiso" ? errorPagina("Acceso no permitido", e.message) : errorPagina("No encontrado", e.message); }
+    var gestor = esGestor(actual), duenio = esDueno(actual, t), asignado = esTecnicoAsignado(actual, t);
+    var tec = t.tecnico ? usuario(t.tecnico) : null;
+    var acciones = "";
+    if (FINALES.indexOf(t.estado) < 0) {
+      if (gestor && t.estado === NUEVO) acciones += formulario("asignar", "Asignar a un técnico", '<select name="tecnico" aria-label="Técnico">' +
+        bd.usuarios.filter(function (u) { return u.rol === "tecnico" && u.activo; }).map(function (u) { return '<option value="' + u.id + '">' + esc(u.nombre) + "</option>"; }).join("") + "</select>", "Asignar");
+      if (asignado && [ASIGNADO, EN_PROGRESO, PENDIENTE].indexOf(t.estado) >= 0) acciones += formulario("estado", "Cambiar estado",
+        '<select name="estado" aria-label="Nuevo estado">' + opciones(TRANSICIONES[t.estado]) + '</select><label>Comentario (obligatorio si marca «Resuelto»: describa la solución)</label><textarea name="texto"></textarea>', "Guardar estado");
+      if (asignado || gestor) acciones += formulario("comentar", "Comentario de seguimiento", '<textarea name="texto" aria-label="Comentario"></textarea>', "Agregar comentario");
+      if (duenio && ABIERTOS.indexOf(t.estado) >= 0) acciones += formulario("complementar", "Agregar información", '<textarea name="texto" aria-label="Información"></textarea>', "Enviar información");
+      if (duenio && t.estado === NUEVO) acciones += formulario("cancelar", "Cancelar ticket", '<label>Motivo *</label><textarea name="texto"></textarea>', "Cancelar ticket", "peligro");
+      if ((duenio || gestor) && t.estado === RESUELTO) {
+        acciones += formulario("cerrar", "Confirmar solución", '<p class="suave">Si el problema quedó resuelto, cierre el ticket.</p>', "Cerrar ticket");
+        acciones += formulario("reabrir", "Reabrir ticket", '<p class="suave">Disponible durante ' + DIAS_REAPERTURA + ' días después de la resolución.</p><textarea name="texto" placeholder="¿Por qué se reabre?" aria-label="Motivo de reapertura"></textarea>', "Reabrir", "secundario");
+      }
+    }
+    var hist = bd.historial.filter(function (h) { return h.ticket === t.id; }).map(function (h) {
+      var que = h.tipo === "cambio_estado" ? esc(h.antes || "—") + " → " + esc(h.despues) : h.tipo === "creacion" ? "Creó el ticket" : h.tipo === "comentario" ? "Comentario" : "Información complementaria";
+      return "<li><strong>" + h.fecha.slice(0, 16) + "</strong> · " + esc(usuario(h.usuario).nombre) + " · " + que + (h.texto ? '<br><span class="suave">' + esc(h.texto) + "</span>" : "") + "</li>";
+    }).join("");
+    pintar("<h1>" + t.codigo + " · " + esc(t.asunto) + '</h1><div class="panel"><dl class="dato">' +
+      '<dt>Estado</dt><dd><span class="estado">' + esc(t.estado) + "</span></dd><dt>Prioridad</dt><dd>" + esc(t.prioridad) + "</dd><dt>Categoría</dt><dd>" + esc(t.categoria) +
+      "</dd><dt>Solicitante</dt><dd>" + esc(usuario(t.solicitante).nombre) + "</dd><dt>Técnico asignado</dt><dd>" + (tec ? esc(tec.nombre) : "Sin asignar") +
+      "</dd><dt>Fecha de creación</dt><dd>" + t.creado + '</dd><dt>Descripción</dt><dd style="white-space:pre-line">' + esc(t.descripcion) + "</dd>" +
+      (t.solucion ? '<dt>Solución</dt><dd style="white-space:pre-line">' + esc(t.solucion) + "</dd>" : "") +
+      (t.resuelto ? "<dt>Resuelto el</dt><dd>" + t.resuelto + "</dd>" : "") +
+      (t.motivo ? "<dt>Motivo de cancelación</dt><dd>" + esc(t.motivo) + "</dd>" : "") + "</dl></div>" +
+      (FINALES.indexOf(t.estado) < 0 ? (acciones ? '<h2>Acciones disponibles</h2><div class="acciones">' + acciones + "</div>" : "")
+        : '<p class="mensaje aviso">Este ticket está en un estado final (' + esc(t.estado) + "). Puede consultarlo, pero ya no admite cambios.</p>") +
+      '<h2>Historial de atención</h2><div class="panel"><ul class="historial">' + hist + "</ul></div>");
+    var exito = { asignar: "Ticket asignado.", estado: "Estado actualizado.", comentar: "Comentario registrado.", complementar: "Información agregada.", cancelar: "Ticket cancelado.", reabrir: "Ticket reabierto.", cerrar: "Ticket cerrado." };
+    vista.querySelectorAll("form[data-accion]").forEach(function (f) {
+      f.onsubmit = function (e) {
+        e.preventDefault();
+        var a = f.dataset.accion, txt = f.texto ? f.texto.value : "";
+        try {
+          if (a === "asignar") servicio.asignar(actual, t.id, f.tecnico.value);
+          else if (a === "estado") servicio.cambiarEstado(actual, t.id, f.estado.value, txt);
+          else if (a === "comentar") servicio.comentar(actual, t.id, txt);
+          else if (a === "complementar") servicio.complementar(actual, t.id, txt);
+          else if (a === "cancelar") servicio.cancelar(actual, t.id, txt);
+          else if (a === "reabrir") servicio.reabrir(actual, t.id, txt);
+          else if (a === "cerrar") servicio.cerrar(actual, t.id);
+          avisar("ok", exito[a]);
+        } catch (err) {
+          if (err.tipo === "permiso") return errorPagina("Acceso no permitido", err.message);
+          avisar("error", err.message);
+        }
+        vistaDetalle(t.id);
+      };
+    });
+  }
+
+  function dibujar() {
+    var ruta = location.hash.replace(/^#/, "") || "/";
+    var partes = ruta.split("?");
+    if (!actual) {
+      if (ruta !== "/login" && ruta !== "/") avisar("aviso", "Debe iniciar sesión para continuar.");
+      return vistaLogin();
+    }
+    if (partes[0] === "/nuevo") return vistaNuevo();
+    var m = partes[0].match(/^\/ticket\/(\d+)$/);
+    if (m) return vistaDetalle(Number(m[1]));
+    return vistaLista(partes[1]);
+  }
+
+  document.getElementById("reiniciar").onclick = function () {
+    sembrar(); sesion(null); avisar("ok", "Datos de ejemplo restablecidos."); ir("#/login");
+  };
+  window.addEventListener("hashchange", dibujar);
+  dibujar();
+})();
+</script>
