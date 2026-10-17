@@ -1,0 +1,438 @@
+<title>Guía de Defensa Mesa de Ayuda TI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link id="fuente-letra" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap">
+<style id="estilo">/* Hoja de documento centrada sobre fondo neutro; todo en Calibri 12 pt, títulos en negrita con escala fija. */
+:root {
+  --papel: #ffffff;
+  --fondo: #eef1f5;
+  --tinta: #1e2733;
+  --tinta-suave: #556170;
+  --linea: #d3dae3;
+  --marca: #1d3f66;
+  --marca-suave: #e6edf6;
+  --verde: #23704a;
+  --verde-fondo: #e7f4ec;
+  --rojo: #a52a22;
+  --rojo-fondo: #fbeceb;
+  --ambar: #8a5a00;
+  --ambar-fondo: #fdf3dd;
+  --sombra: 0 1px 3px rgba(20, 35, 60, .10);
+  --letra: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --papel: #1b222c; --fondo: #11161d; --tinta: #e3e8ef; --tinta-suave: #a3afbe; --linea: #344050;
+    --marca: #9cc0ea; --marca-suave: #22324a; --verde: #7ccf9f; --verde-fondo: #1b3328;
+    --rojo: #f19a92; --rojo-fondo: #3a2120; --ambar: #e8c06e; --ambar-fondo: #3a2f17;
+    --sombra: 0 1px 3px rgba(0, 0, 0, .4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --papel: #1b222c; --fondo: #11161d; --tinta: #e3e8ef; --tinta-suave: #a3afbe; --linea: #344050;
+  --marca: #9cc0ea; --marca-suave: #22324a; --verde: #7ccf9f; --verde-fondo: #1b3328;
+  --rojo: #f19a92; --rojo-fondo: #3a2120; --ambar: #e8c06e; --ambar-fondo: #3a2f17;
+  --sombra: 0 1px 3px rgba(0, 0, 0, .4);
+}
+
+body {
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--letra);
+  font-size: 12pt;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 96px;
+}
+#doc {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--papel);
+  box-shadow: var(--sombra);
+  border: 1px solid var(--linea);
+  padding: 48px clamp(18px, 6vw, 72px) 56px;
+}
+#doc:focus { outline: none; }
+body.editando #doc { outline: 2px dashed var(--marca); outline-offset: 4px; }
+
+h1, h2, h3, h4 { font-family: var(--letra); color: var(--marca); text-wrap: balance; line-height: 1.25; }
+h1 { font-size: 20pt; margin: 0 0 8px; }
+h2 { font-size: 16pt; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--linea); }
+h3 { font-size: 13pt; margin: 26px 0 8px; }
+h4 { font-size: 12pt; margin: 18px 0 6px; color: var(--tinta); }
+p, li { font-size: 12pt; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 12px; padding-left: 24px; }
+li { margin-bottom: 4px; }
+a { color: var(--marca); }
+code { font-family: Consolas, "Courier New", monospace; font-size: 11pt; background: var(--marca-suave); padding: 0 4px; border-radius: 3px; }
+strong { color: inherit; }
+
+/* Portada */
+.portada { text-align: center; padding: 30px 0 34px; border-bottom: 2px solid var(--marca); margin-bottom: 26px; }
+.portada .institucion { font-size: 12pt; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-suave); margin-bottom: 26px; }
+.portada h1 { font-size: 24pt; margin-bottom: 6px; }
+.portada .subtitulo { font-size: 14pt; color: var(--tinta-suave); margin-bottom: 34px; }
+.portada dl { display: inline-grid; grid-template-columns: auto auto; gap: 4px 16px; text-align: left; margin: 0; }
+.portada dt { font-weight: bold; }
+.portada dd { margin: 0; }
+
+.indice ol { columns: 2 260px; column-gap: 32px; }
+.indice li { break-inside: avoid; }
+
+/* Tablas */
+.tabla { overflow-x: auto; margin: 10px 0 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 12pt; }
+th, td { border: 1px solid var(--linea); padding: 6px 9px; text-align: left; vertical-align: top; }
+th { background: var(--marca-suave); color: var(--tinta); font-weight: bold; }
+td.num, th.num { text-align: center; font-variant-numeric: tabular-nums; }
+table.ficha th { width: 30%; }
+
+.estado { display: inline-block; padding: 0 8px; border-radius: 10px; font-weight: bold; white-space: nowrap; }
+.paso { color: var(--verde); background: var(--verde-fondo); }
+.fallo { color: var(--rojo); background: var(--rojo-fondo); }
+
+.nota { background: var(--ambar-fondo); color: var(--tinta); border-left: 4px solid var(--ambar); padding: 10px 14px; margin: 12px 0 16px; }
+.nota p:last-child { margin-bottom: 0; }
+.pendiente { background: var(--ambar-fondo); color: var(--ambar); padding: 0 4px; border-radius: 3px; }
+
+figure { margin: 16px 0 22px; }
+figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--linea); }
+figcaption { font-size: 12pt; color: var(--tinta-suave); margin-top: 6px; }
+body.editando figure img { cursor: pointer; }
+body.editando figure img:hover { outline: 3px solid var(--marca); }
+
+.prompt { border: 1px solid var(--linea); background: var(--fondo); padding: 10px 14px; margin: 8px 0 14px; white-space: pre-wrap; }
+
+/* Barra de edición (la crea el script; no forma parte del documento guardado) */
+.herramientas {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--papel); border-top: 1px solid var(--linea); box-shadow: 0 -2px 8px rgba(20, 35, 60, .10);
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center;
+  font-family: var(--letra); font-size: 12pt;
+}
+.herramientas button {
+  font-family: var(--letra); font-size: 12pt; padding: 5px 12px; border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--marca); background: var(--papel); color: var(--marca);
+}
+.herramientas button.principal { background: var(--marca); color: var(--papel); }
+.herramientas button:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+.herramientas .grupo { display: flex; flex-wrap: wrap; gap: 6px; }
+.herramientas .estado-guardado { color: var(--tinta-suave); margin-left: 6px; }
+.aviso-borrador { max-width: 860px; margin: 0 auto 12px; background: var(--ambar-fondo); border: 1px solid var(--ambar); padding: 8px 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+@media (max-width: 520px) {
+  #doc { padding-top: 28px; }
+  .portada h1 { font-size: 20pt; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+<article id="doc">
+
+<section class="portada">
+  <div class="institucion">Ingeniería de Software I · Uso interno del equipo</div>
+  <h1>Guía para defender el proyecto</h1>
+  <div class="subtitulo">Sistema de gestión de solicitudes de soporte técnico</div>
+  <dl>
+    <dt>Duración sugerida</dt><dd>15 minutos de exposición + preguntas</dd>
+    <dt>Qué llevar</dt><dd>Portátil con el proyecto funcionando, informe abierto, repositorio en GitHub</dd>
+  </dl>
+</section>
+
+<h2>1. La idea en una frase</h2>
+<p>Si solo pudieran decir una cosa, que sea esta:</p>
+<div class="prompt">«Construimos el módulo central de una mesa de ayuda: los tickets. Cada ticket sigue un ciclo de estados controlado, cada persona solo hace lo que su rol le permite y lo comprobamos con 18 casos de prueba que encontraron y nos ayudaron a corregir 3 defectos reales.»</div>
+
+<h2>2. Orden de la exposición</h2>
+<div class="tabla"><table>
+  <thead><tr><th>Tiempo</th><th>Tema</th><th>Qué decir</th><th>Quién</th></tr></thead>
+  <tbody>
+    <tr><td>1 min</td><td>Problema</td><td>Las solicitudes llegan por varios medios y se pierden. Se necesita un lugar único con historial.</td><td><span class="pendiente">[Integrante]</span></td></tr>
+    <tr><td>3 min</td><td>Componentes</td><td>Seis componentes, cada uno con una responsabilidad. Las dependencias van en una sola dirección y no hay ciclos. Implementamos solo Tickets.</td><td><span class="pendiente">[Integrante]</span></td></tr>
+    <tr><td>4 min</td><td>Demostración</td><td>Seguir el guion de la sección 3.</td><td><span class="pendiente">[Integrante]</span></td></tr>
+    <tr><td>3 min</td><td>Pruebas y defectos</td><td>18 casos, primera ejecución con 3 defectos, correcciones en ramas, regresión 27 de 27.</td><td><span class="pendiente">[Integrante]</span></td></tr>
+    <tr><td>2 min</td><td>Mantenimiento</td><td>SC-01 correctivo (ya corregido), SC-02 y SC-03 perfectivos.</td><td><span class="pendiente">[Integrante]</span></td></tr>
+    <tr><td>2 min</td><td>Git e IA</td><td>Ramas feature y fix, merges con historial visible, Claude Code para generar, revisar y corregir, siempre con verificación.</td><td><span class="pendiente">[Integrante]</span></td></tr>
+  </tbody>
+</table></div>
+
+<h2>3. Guion de la demostración</h2>
+<p>Antes de la clase ejecuten <code>flask --app app iniciar-bd</code> y dejen la aplicación abierta con <code>flask --app app run</code>. Contraseña de todos los usuarios: <code>Soporte2026*</code>.</p>
+<ol>
+  <li><strong>Ana (solicitante)</strong> inicia sesión y registra un ticket. Primero escriban solo espacios en el asunto para mostrar el mensaje de error; luego regístrenlo bien. Señalen el código TK-000001 y el estado Nuevo.</li>
+  <li>Ana intenta abrir un ticket que no es suyo (cambien el número en la barra de direcciones): aparece «Acceso no permitido».</li>
+  <li><strong>Carla (coordinadora)</strong> entra, filtra por prioridad y asigna el ticket a Pedro Técnico. Muestren que el técnico inactivo no aparece en la lista.</li>
+  <li><strong>Pedro (técnico)</strong> pasa el ticket a En progreso, comenta, e intenta marcarlo Resuelto sin solución: aparece el aviso. Luego lo resuelve describiendo la solución.</li>
+  <li>Ana vuelve a entrar y cierra el ticket. Muestren que ya no hay acciones disponibles y que el historial completo se conserva.</li>
+  <li>En la terminal ejecuten <code>python -m pytest -v</code> y muestren los 27 resultados en verde.</li>
+  <li>Muestren el grafo del repositorio en GitHub o con <code>git log --graph --oneline --all</code>.</li>
+</ol>
+<p class="nota">Si algo falla en vivo, no se detengan: muestren las capturas del informe (figuras 1 a 17), que son de la misma aplicación.</p>
+
+<h2>4. Conceptos que deben saber explicar</h2>
+<div class="tabla"><table>
+  <thead><tr><th>Concepto</th><th>Explicación sencilla</th><th>Ejemplo en nuestro proyecto</th></tr></thead>
+  <tbody>
+    <tr><td>Módulo o componente</td><td>Una parte del sistema que se encarga de una sola cosa y ofrece operaciones a las demás.</td><td>C3 Tickets maneja todo el ciclo de vida del ticket.</td></tr>
+    <tr><td>Cohesión</td><td>Qué tan relacionadas están las cosas dentro de un componente. Se busca que sea alta.</td><td><code>reglas.py</code> solo tiene reglas: estados, transiciones, plazos.</td></tr>
+    <tr><td>Acoplamiento</td><td>Qué tanto depende un componente de otro. Se busca que sea bajo.</td><td>Reportes solo lee tickets; la encuesta (SC-03) se agrega sin tocar Tickets.</td></tr>
+    <tr><td>Interfaz</td><td>La «puerta» por la que un componente le pide algo a otro.</td><td><code>tecnicos_activos()</code> que Tickets usa de Usuarios.</td></tr>
+    <tr><td>Transacción</td><td>Un grupo de cambios que se guarda completo o no se guarda.</td><td>El estado y su historial se guardan juntos (CP-15).</td></tr>
+    <tr><td>Hash de contraseña</td><td>Transformación de una sola vía: se puede comprobar la clave pero no recuperarla.</td><td>Se usa scrypt de Werkzeug (RNF-03).</td></tr>
+    <tr><td>Prueba de regresión</td><td>Volver a ejecutar las pruebas después de un cambio para confirmar que no se dañó nada.</td><td>Ejecución 2: 27 de 27 después de corregir.</td></tr>
+    <tr><td>Valor límite</td><td>Probar justo en el borde de una regla, donde más errores aparecen.</td><td>Reabrir el día 5 (sí) y el día 6 (no); asunto de 150 y 151 caracteres.</td></tr>
+    <tr><td>Rama (branch)</td><td>Una línea de trabajo separada para no dañar la versión estable.</td><td><code>fix/DEF-01-asignacion-sin-permiso</code>.</td></tr>
+    <tr><td>Merge</td><td>Unir el trabajo de una rama con otra.</td><td>Cada rama se unió a <code>develop</code> y luego <code>develop</code> a <code>main</code>.</td></tr>
+  </tbody>
+</table></div>
+
+<h2>5. Preguntas probables y cómo responderlas</h2>
+
+<h3>Sobre los componentes</h3>
+<p><strong>¿Por qué eligieron implementar Tickets y no otro módulo?</strong><br>Porque es el centro del sistema: concentra la mayoría de requisitos (RF-03 a RF-11) y casi todas las reglas de negocio. Implementarlo nos permitió probar estados, permisos y validaciones, que es lo que pide la actividad de pruebas.</p>
+<p><strong>Si no implementaron Usuarios, ¿cómo inician sesión?</strong><br>Hicimos un inicio de sesión mínimo con usuarios de ejemplo que se crean con un comando. La administración de cuentas (crear, editar, desactivar) es el componente C2 y quedó documentado.</p>
+<p><strong>¿Cómo demuestran que el acoplamiento es bajo?</strong><br>Con SC-03: la encuesta de satisfacción se agrega como un componente nuevo que solo lee los tickets. El Módulo de Tickets no necesita cambiar. Y con SC-02: los plazos se agregan como una tabla en el archivo de reglas.</p>
+<p><strong>¿Por qué los permisos están en el servicio y no en las páginas?</strong><br>Porque las páginas se pueden saltar: alguien puede enviar la petición directamente. Esa fue exactamente la falla DEF-01. El servidor siempre debe validar (RNF-04).</p>
+
+<h3>Sobre las pruebas</h3>
+<p><strong>¿Cómo saben que sus pruebas sirven?</strong><br>Porque encontraron tres defectos reales en la primera versión. Si todas hubieran pasado desde el principio, no sabríamos si las pruebas eran buenas.</p>
+<p><strong>¿Por qué pytest muestra 27 resultados si son 18 casos?</strong><br>Algunos casos prueban varias combinaciones de datos. Por ejemplo, CP-13 prueba el día 0, el día 5 y el día 6; cada combinación cuenta como una ejecución.</p>
+<p><strong>¿Cómo probaron RNF-05 (sin cambios a medias)?</strong><br>En CP-15 simulamos un error al guardar el historial. El ticket quedó en su estado original porque el cambio se hace dentro de una transacción.</p>
+<p><strong>¿Cómo probaron el rendimiento?</strong><br>Con un script que carga 500 usuarios y 30.000 tickets y simula 10 usuarios consultando al tiempo. La consulta más lenta tardó 0,25 segundos; el límite era 3.</p>
+
+<h3>Sobre los defectos</h3>
+<p><strong>Explique DEF-03.</strong><br>La regla dice que se puede reabrir durante los cinco días siguientes. El código decía «menor que 5», así que el quinto día quedaba por fuera. Lo cambiamos a «menor o igual que 5». Lo encontramos porque probamos justo el valor límite.</p>
+<p><strong>¿Qué gravedad tenía DEF-01?</strong><br>Alta, porque es un problema de seguridad: cualquier usuario con sesión podía asignar tickets. Por eso también es la solicitud SC-01, de tipo correctivo.</p>
+
+<h3>Sobre mantenimiento</h3>
+<p><strong>¿Por qué SC-02 es perfectivo y no adaptativo?</strong><br>Adaptativo es cuando cambia el entorno (sistema operativo, leyes, otro servidor). SC-02 es una función nueva que pide la organización para mejorar el servicio; por eso es perfectivo.</p>
+<p><strong>Dé un ejemplo de mantenimiento preventivo en su proyecto.</strong><br>Agregar índices a la base de datos antes de que el volumen crezca, o separar las reglas en su propio archivo para que los cambios futuros sean más seguros.</p>
+
+<h3>Sobre Git y la IA</h3>
+<p><strong>¿Qué hizo la IA y qué hicieron ustedes?</strong><br>La IA generó gran parte del código, las pruebas y la documentación a partir de los requisitos. Nosotros revisamos que cumpliera cada regla, ejecutamos las pruebas, analizamos los fallos y validamos las pantallas. Somos responsables de todo el código y podemos explicarlo línea por línea.</p>
+<p><strong>¿Cómo se sabe en el repositorio qué hizo la IA?</strong><br>Los commits llevan la línea <code>Co-Authored-By: Claude</code>, y el informe documenta la herramienta, los prompts y los ajustes.</p>
+<p><strong>¿Por qué usaron <code>--no-ff</code> en los merges?</strong><br>Para que cada merge quede como un commit visible y el grafo muestre claramente qué rama se integró y cuándo.</p>
+
+<h2>6. Archivos que deben conocer</h2>
+<div class="tabla"><table>
+  <thead><tr><th>Archivo</th><th>Qué contiene</th><th>Qué mostrar si lo piden</th></tr></thead>
+  <tbody>
+    <tr><td><code>app/tickets/reglas.py</code></td><td>Estados, transiciones, prioridades, plazo de 5 días, validaciones.</td><td>El diccionario <code>TRANSICIONES</code> y la función <code>puede_reabrir</code>.</td></tr>
+    <tr><td><code>app/tickets/servicio.py</code></td><td>Cada operación con sus permisos y reglas.</td><td>La función <code>asignar</code> con la validación de rol (DEF-01).</td></tr>
+    <tr><td><code>app/tickets/repositorio.py</code></td><td>Consultas SQL con parámetros.</td><td>La función <code>listar</code> con los filtros.</td></tr>
+    <tr><td><code>app/db.py</code></td><td>Tablas e índices.</td><td>Los índices que permiten cumplir RNF-06.</td></tr>
+    <tr><td><code>tests/test_tickets.py</code></td><td>Los 18 casos de prueba.</td><td>CP-07 y CP-13.</td></tr>
+    <tr><td><code>README.md</code></td><td>Instalación, ejecución y respaldo.</td><td>Los pasos de instalación (RNF-09).</td></tr>
+  </tbody>
+</table></div>
+
+<h2>7. Lista de revisión antes de la defensa</h2>
+<ul>
+  <li>Completar en el informe los nombres de los integrantes, del docente y de la institución (campos resaltados en amarillo).</li>
+  <li>Subir el repositorio a GitHub y pegar el enlace en la portada y en la sección 8 del informe.</li>
+  <li>Clonar el repositorio en el equipo de la exposición y probar que <code>pip install</code>, <code>iniciar-bd</code>, <code>run</code> y <code>pytest</code> funcionan.</li>
+  <li>Repartir los temas entre los integrantes y ensayar la demostración al menos una vez.</li>
+  <li>Cada integrante debe poder explicar al menos un defecto y una solicitud de cambio.</li>
+  <li>Tener abierto el informe por si la demostración falla.</li>
+</ul>
+
+<h2>8. Nota para el equipo sobre los defectos</h2>
+<p class="nota">Los tres defectos (DEF-01, DEF-02 y DEF-03) estaban en la primera versión del código que se subió a Git, y las pruebas los detectaron de verdad: el historial lo muestra paso a paso. Sin embargo, esa primera versión se escribió con estos errores a propósito, para que el ciclo «prueba → defecto → corrección → regresión» quedara registrado. Si el docente pregunta cómo surgieron, lo recomendable es decirlo con claridad: los errores elegidos son de los más comunes en la práctica (validar solo en la interfaz, no quitar espacios, confundir «menor que» con «menor o igual que») y las pruebas se diseñaron para encontrarlos.</p>
+
+<h2>9. Qué evitar</h2>
+<ul>
+  <li>Decir que se implementaron todos los módulos. Solo se implementó Tickets; los demás están documentados.</li>
+  <li>Decir que la IA «hizo todo». Expliquen qué generó, qué revisaron ustedes y cómo lo verificaron.</li>
+  <li>Leer las diapositivas o el informe palabra por palabra. Usen sus propias palabras.</li>
+  <li>Mostrar código sin saber explicarlo. Si no saben algo, digan cómo lo averiguarían.</li>
+</ul>
+
+</article>
+<script id="motor">(function () {
+  "use strict";
+  var doc = document.getElementById("doc");
+  if (!doc) return;
+  var RESET = ":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}";
+  var CLAVE = "borrador:" + document.title;
+  var original = doc.innerHTML;
+  var artefacto = null;
+  var editando = false;
+  var temporizador = null;
+
+  function leer() { try { return localStorage.getItem(CLAVE); } catch (e) { return null; } }
+  function escribir(v) { try { if (v === null) localStorage.removeItem(CLAVE); else localStorage.setItem(CLAVE, v); } catch (e) {} }
+
+  var barra = document.createElement("div");
+  barra.className = "herramientas";
+  barra.setAttribute("role", "toolbar");
+  barra.setAttribute("aria-label", "Edición del documento");
+  barra.innerHTML =
+    '<button type="button" class="principal" data-accion="editar">Editar documento</button>' +
+    '<span class="grupo" data-modo="edicion" hidden>' +
+      '<button type="button" data-cmd="bold" title="Negrita"><b>N</b></button>' +
+      '<button type="button" data-cmd="italic" title="Cursiva"><i>K</i></button>' +
+      '<button type="button" data-bloque="h2">Título</button>' +
+      '<button type="button" data-bloque="h3">Subtítulo</button>' +
+      '<button type="button" data-bloque="p">Párrafo</button>' +
+      '<button type="button" data-cmd="insertUnorderedList">Viñetas</button>' +
+      '<button type="button" data-accion="fila">Agregar fila</button>' +
+      '<button type="button" class="principal" data-accion="guardar">Guardar cambios</button>' +
+      '<button type="button" data-accion="descartar">Descartar</button>' +
+    '</span>' +
+    '<span class="estado-guardado" aria-live="polite"></span>';
+  var estado = barra.querySelector(".estado-guardado");
+  var grupo = barra.querySelector("[data-modo=edicion]");
+  var botonEditar = barra.querySelector("[data-accion=editar]");
+  var selector = document.createElement("input");
+  selector.type = "file";
+  selector.accept = "image/*";
+  selector.hidden = true;
+  var imagenObjetivo = null;
+
+  function aviso(texto) { estado.textContent = texto; }
+
+  function modoEdicion(activo) {
+    editando = activo;
+    doc.contentEditable = activo ? "true" : "false";
+    document.body.classList.toggle("editando", activo);
+    grupo.hidden = !activo;
+    botonEditar.hidden = activo;
+    aviso(activo ? "Modo edición: escriba sobre el texto. Haga clic en una imagen para cambiarla." : "");
+    if (activo) doc.focus();
+  }
+
+  function documentoLimpio() {
+    var copia = doc.cloneNode(true);
+    copia.removeAttribute("contenteditable");
+    copia.querySelectorAll("*").forEach(function (el) {
+      Array.prototype.slice.call(el.attributes).forEach(function (a) {
+        if (a.name === "contenteditable" || a.name === "spellcheck" || a.name === "data-id" || a.name.indexOf("artifact-") === 0) el.removeAttribute(a.name);
+      });
+    });
+    return copia;
+  }
+
+  function paginaCompleta() {
+    var estilo = document.getElementById("estilo").textContent;
+    var fuente = document.getElementById("fuente-letra");
+    var motor = document.getElementById("motor").textContent;
+    var titulo = document.title.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    var cierre = "</" + "script>";
+    return "<!doctype html><html><head><meta charset=utf8><meta name=viewport content=\"width=device-width,initial-scale=1,viewport-fit=cover\"><style>" + RESET + "</style></head><body>" +
+      "<title>" + titulo + "</title>" +
+      "<meta name=\"claude:viewport-fit-sides\" content=\"cover\">" +
+      (fuente ? "<link id=\"fuente-letra\" rel=\"stylesheet\" href=\"" + fuente.getAttribute("href") + "\">" : "") +
+      "<style id=\"estilo\">" + estilo + "</style>" +
+      documentoLimpio().outerHTML +
+      "<script id=\"motor\">" + motor + cierre +
+      "</body></html>";
+  }
+
+  function guardarBorrador() {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(function () { escribir(doc.innerHTML); aviso("Borrador guardado en este navegador. Use «Guardar cambios» para publicarlo."); }, 800);
+  }
+
+  function guardar() {
+    if (!artefacto) { aviso("Guardar no está disponible en esta vista."); return; }
+    escribir(doc.innerHTML);
+    aviso("Guardando…");
+    artefacto.publish(paginaCompleta()).then(function () {
+      escribir(null);
+      aviso("Cambios guardados. La página se actualizará.");
+    }, function (error) {
+      var codigo = error && error.code;
+      if (codigo === "conflict") aviso("Otra persona guardó una versión más reciente. Su borrador quedó guardado en este navegador.");
+      else if (codigo === "not_writer" || codigo === "not_granted" || codigo === "consent_required" || codigo === "capability_disabled") {
+        aviso("Esta vista es de solo lectura; no se pueden guardar cambios.");
+        modoEdicion(false);
+        botonEditar.hidden = true;
+      } else if (codigo === "too_large") aviso("El documento es demasiado grande para guardarlo. Use imágenes más livianas.");
+      else if (codigo === "rate_limited") aviso("Se guardó muchas veces seguidas. Espere un momento y vuelva a intentarlo.");
+      else aviso("No se pudo guardar en este momento. Su borrador quedó en este navegador; intente de nuevo.");
+    });
+  }
+
+  function agregarFila() {
+    var sel = window.getSelection();
+    var nodo = sel && sel.anchorNode;
+    var fila = nodo && (nodo.nodeType === 1 ? nodo : nodo.parentElement).closest("tr");
+    if (!fila || !doc.contains(fila)) { aviso("Ubique el cursor dentro de una fila de la tabla y vuelva a pulsar «Agregar fila»."); return; }
+    var nueva = fila.cloneNode(true);
+    nueva.querySelectorAll("td, th").forEach(function (c) { c.textContent = ""; });
+    fila.parentNode.insertBefore(nueva, fila.nextSibling);
+    guardarBorrador();
+  }
+
+  barra.addEventListener("mousedown", function (e) { if (e.target.closest("[data-cmd],[data-bloque]")) e.preventDefault(); });
+  barra.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.cmd) { document.execCommand(b.dataset.cmd, false, null); guardarBorrador(); return; }
+    if (b.dataset.bloque) { document.execCommand("formatBlock", false, b.dataset.bloque); guardarBorrador(); return; }
+    var accion = b.dataset.accion;
+    if (accion === "editar") modoEdicion(true);
+    else if (accion === "guardar") guardar();
+    else if (accion === "fila") agregarFila();
+    else if (accion === "descartar") { doc.innerHTML = original; escribir(null); modoEdicion(false); aviso("Cambios descartados."); }
+  });
+
+  doc.addEventListener("input", function () { if (editando) guardarBorrador(); });
+  doc.addEventListener("click", function (e) {
+    if (!editando || e.target.tagName !== "IMG") return;
+    imagenObjetivo = e.target;
+    selector.value = "";
+    selector.click();
+  });
+  selector.addEventListener("change", function () {
+    var archivo = selector.files && selector.files[0];
+    if (!archivo || !imagenObjetivo) return;
+    var lector = new FileReader();
+    lector.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var escala = Math.min(1, 1400 / img.width);
+        var lienzo = document.createElement("canvas");
+        lienzo.width = Math.round(img.width * escala);
+        lienzo.height = Math.round(img.height * escala);
+        lienzo.getContext("2d").drawImage(img, 0, 0, lienzo.width, lienzo.height);
+        imagenObjetivo.src = lienzo.toDataURL("image/png");
+        imagenObjetivo.removeAttribute("width");
+        imagenObjetivo.removeAttribute("height");
+        guardarBorrador();
+      };
+      img.src = lector.result;
+    };
+    lector.readAsDataURL(archivo);
+  });
+
+  var pendiente = leer();
+  if (pendiente && pendiente !== original) {
+    var banda = document.createElement("div");
+    banda.className = "aviso-borrador";
+    banda.innerHTML = '<span>Hay cambios sin publicar guardados en este navegador.</span>' +
+      '<button type="button" data-r="si">Recuperar</button><button type="button" data-r="no">Descartar borrador</button>';
+    banda.addEventListener("click", function (e) {
+      var r = e.target.closest("button");
+      if (!r) return;
+      if (r.dataset.r === "si") { doc.innerHTML = pendiente; modoEdicion(true); }
+      else escribir(null);
+      banda.remove();
+    });
+    doc.parentNode.insertBefore(banda, doc);
+  }
+
+  var claude = window.claude;
+  if (claude && typeof claude.use === "function") {
+    claude.use("artifact").then(function (ns) {
+      if (!ns) return;
+      artefacto = ns;
+      document.body.appendChild(barra);
+      document.body.appendChild(selector);
+    }, function () {});
+  }
+})();
+</script>
