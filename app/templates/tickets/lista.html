@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block titulo %}Tickets{% endblock %}
+{% block contenido %}
+<h1>{% if g.usuario.rol == 'solicitante' %}Mis tickets{% else %}Tickets de soporte{% endif %}</h1>
+
+<form class="panel filtros" method="get">
+  <div><label for="estado">Estado</label>
+    <select id="estado" name="estado"><option value="">Todos</option>
+      {% for e in reglas.ESTADOS %}<option {% if filtros.estado == e %}selected{% endif %}>{{ e }}</option>{% endfor %}
+    </select></div>
+  <div><label for="categoria">Categoría</label>
+    <select id="categoria" name="categoria"><option value="">Todas</option>
+      {% for c in reglas.CATEGORIAS %}<option {% if filtros.categoria == c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select></div>
+  <div><label for="prioridad">Prioridad</label>
+    <select id="prioridad" name="prioridad"><option value="">Todas</option>
+      {% for p in reglas.PRIORIDADES %}<option {% if filtros.prioridad == p %}selected{% endif %}>{{ p }}</option>{% endfor %}
+    </select></div>
+  <div><label for="desde">Desde</label><input type="date" id="desde" name="desde" value="{{ filtros.desde }}"></div>
+  <div><label for="hasta">Hasta</label><input type="date" id="hasta" name="hasta" value="{{ filtros.hasta }}"></div>
+  {% if g.usuario.rol == 'tecnico' %}
+  <div><label><input type="checkbox" name="mios" value="1" {% if filtros.mios %}checked{% endif %}> Solo asignados a mí</label></div>
+  {% endif %}
+  <div><button type="submit">Filtrar</button> <a class="boton secundario" href="{{ url_for('tickets.listar') }}">Limpiar</a></div>
+</form>
+
+<p class="suave">{{ total }} ticket(s) encontrados.</p>
+<table>
+  <thead><tr><th>Código</th><th>Asunto</th><th>Categoría</th><th>Prioridad</th><th>Estado</th><th>Solicitante</th><th>Técnico</th><th>Creado</th></tr></thead>
+  <tbody>
+  {% for t in tickets %}
+    <tr>
+      <td><a href="{{ url_for('tickets.detalle', ticket_id=t.id) }}">{{ t.codigo }}</a></td>
+      <td>{{ t.asunto }}</td><td>{{ t.categoria }}</td><td>{{ t.prioridad }}</td>
+      <td><span class="estado">{{ t.estado }}</span></td>
+      <td>{{ t.solicitante_nombre }}</td><td>{{ t.tecnico_nombre or '—' }}</td><td>{{ t.fecha_creacion[:16] }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="8">No hay tickets que coincidan con los filtros.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% if paginas > 1 %}
+<div class="paginacion">
+  {% set args = request.args.to_dict() %}
+  {% if pagina > 1 %}{% set _ = args.update(pagina=pagina - 1) %}<a class="boton secundario" href="{{ url_for('tickets.listar', **args) }}">Anterior</a>{% endif %}
+  <span>Página {{ pagina }} de {{ paginas }}</span>
+  {% if pagina < paginas %}{% set _ = args.update(pagina=pagina + 1) %}<a class="boton secundario" href="{{ url_for('tickets.listar', **args) }}">Siguiente</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}
