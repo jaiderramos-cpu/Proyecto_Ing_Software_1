@@ -53,7 +53,7 @@
       {% if g.usuario %}
         <a href="{{ url_for('tickets.listar') }}">Tickets</a>
         <a href="{{ url_for('tickets.nuevo') }}">Registrar ticket</a>
-        <span class="quien">{{ g.usuario.nombre }} ({{ g.usuario.rol|capitalize }})</span>
+        <span class="quien">{{ g.usuario.nombre }} ({{ {'administrador': 'Administrador', 'coordinador': 'Coordinador', 'tecnico': 'Técnico', 'solicitante': 'Solicitante'}[g.usuario.rol] }})</span>
         <form method="post" action="{{ url_for('autenticacion.logout') }}" style="margin:0">
           <button class="secundario" type="submit">Cerrar sesión</button>
         </form>
