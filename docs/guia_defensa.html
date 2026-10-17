@@ -68,7 +68,7 @@ p { margin: 0 0 10px; }
 ul, ol { margin: 0 0 12px; padding-left: 24px; }
 li { margin-bottom: 4px; }
 a { color: var(--marca); }
-code { font-family: Consolas, "Courier New", monospace; font-size: 11pt; background: var(--marca-suave); padding: 0 4px; border-radius: 3px; }
+code { font-family: var(--letra); font-size: 12pt; background: var(--marca-suave); padding: 0 4px; border-radius: 3px; }
 strong { color: inherit; }
 
 /* Portada */
@@ -130,8 +130,36 @@ body.editando figure img:hover { outline: 3px solid var(--marca); }
   .portada h1 { font-size: 20pt; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* Botón para guardar como PDF cuando el archivo HTML se abre por fuera de claude.ai */
+.boton-pdf {
+  position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20;
+  font-family: var(--letra); font-size: 12pt; padding: 8px 16px; border-radius: 4px; cursor: pointer;
+  border: 0; background: var(--marca); color: var(--papel); box-shadow: var(--sombra);
+}
+
+/* Impresión y PDF: hoja A4 blanca, márgenes de 2,5 cm, sin barras ni sombras */
+@media print {
+  @page { size: A4; margin: 2.5cm 2.5cm 2.2cm; }
+  :root:not([data-impresion]), :root[data-theme]:not([data-impresion]) {
+    color-scheme: light;
+    --papel: #ffffff; --fondo: #ffffff; --tinta: #000000; --tinta-suave: #404850; --linea: #b9c2cc;
+    --marca: #1d3f66; --marca-suave: #e6edf6; --verde: #1d6340; --verde-fondo: #e7f4ec;
+    --rojo: #9c2019; --rojo-fondo: #fbeceb; --ambar: #7a4f00; --ambar-fondo: #fdf3dd; --sombra: none;
+  }
+  body { background: #fff; padding: 0; }
+  #doc { max-width: none; border: 0; box-shadow: none; padding: 0; outline: none !important; }
+  .herramientas, .aviso-borrador, .boton-pdf { display: none !important; }
+  #doc[data-saltos] h2:not(:first-child) { break-before: page; }
+  h2, h3, h4 { break-after: avoid; }
+  figure, tr, .prompt, .nota { break-inside: avoid; }
+  figure img { max-height: 19cm; width: auto; margin: 0 auto; }
+  .tabla { overflow: visible; }
+  a { color: inherit; text-decoration: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
 </style>
-<article id="doc">
+<article id="doc" data-archivo="Guia_Defensa_Mesa_de_Ayuda">
 
 <section class="portada">
   <div class="institucion">Ingeniería de Software I · Uso del equipo</div>
@@ -257,7 +285,8 @@ python -m pytest -v</div>
   barra.setAttribute("role", "toolbar");
   barra.setAttribute("aria-label", "Edición del documento");
   barra.innerHTML =
-    '<button type="button" class="principal" data-accion="editar">Editar documento</button>' +
+    '<button type="button" class="principal" data-accion="editar" hidden>Editar documento</button>' +
+    '<button type="button" data-accion="descargar" hidden title="Ábralo en su navegador y pulse «Guardar como PDF»">Descargar HTML (para PDF)</button>' +
     '<span class="grupo" data-modo="edicion" hidden>' +
       '<button type="button" data-cmd="bold" title="Negrita"><b>N</b></button>' +
       '<button type="button" data-cmd="italic" title="Cursiva"><i>K</i></button>' +
@@ -273,6 +302,8 @@ python -m pytest -v</div>
   var estado = barra.querySelector(".estado-guardado");
   var grupo = barra.querySelector("[data-modo=edicion]");
   var botonEditar = barra.querySelector("[data-accion=editar]");
+  var botonDescargar = barra.querySelector("[data-accion=descargar]");
+  var descargas = null;
   var selector = document.createElement("input");
   selector.type = "file";
   selector.accept = "image/*";
@@ -286,7 +317,8 @@ python -m pytest -v</div>
     doc.contentEditable = activo ? "true" : "false";
     document.body.classList.toggle("editando", activo);
     grupo.hidden = !activo;
-    botonEditar.hidden = activo;
+    botonEditar.hidden = activo || !artefacto;
+    botonDescargar.hidden = activo || !descargas;
     aviso(activo ? "Modo edición: escriba sobre el texto. Haga clic en una imagen para cambiarla." : "");
     if (activo) doc.focus();
   }
@@ -302,13 +334,13 @@ python -m pytest -v</div>
     return copia;
   }
 
-  function paginaCompleta() {
+  function paginaCompleta(paraDescarga) {
     var estilo = document.getElementById("estilo").textContent;
     var fuente = document.getElementById("fuente-letra");
     var motor = document.getElementById("motor").textContent;
     var titulo = document.title.replace(/&/g, "&amp;").replace(/</g, "&lt;");
     var cierre = "</" + "script>";
-    return "<!doctype html><html><head><meta charset=utf8><meta name=viewport content=\"width=device-width,initial-scale=1,viewport-fit=cover\"><style>" + RESET + "</style></head><body>" +
+    return "<!doctype html>" + (paraDescarga ? "<html lang=\"es\">" : "<html>") + "<head><meta charset=utf8><meta name=viewport content=\"width=device-width,initial-scale=1,viewport-fit=cover\"><style>" + RESET + "</style></head><body>" +
       "<title>" + titulo + "</title>" +
       "<meta name=\"claude:viewport-fit-sides\" content=\"cover\">" +
       (fuente ? "<link id=\"fuente-letra\" rel=\"stylesheet\" href=\"" + fuente.getAttribute("href") + "\">" : "") +
@@ -343,6 +375,20 @@ python -m pytest -v</div>
     });
   }
 
+  function descargar() {
+    if (!descargas) return;
+    var nombre = (doc.getAttribute("data-archivo") || "documento") + ".html";
+    aviso("Preparando el archivo…");
+    descargas.save({ filename: nombre, data: paginaCompleta(true) }).then(function () {
+      aviso("Archivo descargado. Ábralo en Chrome o Edge y pulse «Guardar como PDF».");
+    }, function (error) {
+      var codigo = error && error.code;
+      if (codigo === "declined") aviso("Descarga cancelada.");
+      else if (codigo === "rate_limited") aviso("Ya hay una descarga en curso. Espere un momento.");
+      else { aviso("La descarga no está disponible en esta vista."); botonDescargar.hidden = true; descargas = null; }
+    });
+  }
+
   function agregarFila() {
     var sel = window.getSelection();
     var nodo = sel && sel.anchorNode;
@@ -363,6 +409,7 @@ python -m pytest -v</div>
     var accion = b.dataset.accion;
     if (accion === "editar") modoEdicion(true);
     else if (accion === "guardar") guardar();
+    else if (accion === "descargar") descargar();
     else if (accion === "fila") agregarFila();
     else if (accion === "descartar") { doc.innerHTML = original; escribir(null); modoEdicion(false); aviso("Cambios descartados."); }
   });
@@ -413,13 +460,23 @@ python -m pytest -v</div>
   }
 
   var claude = window.claude;
+  function mostrarBarra() {
+    if (!barra.parentNode) { document.body.appendChild(barra); document.body.appendChild(selector); }
+    botonEditar.hidden = editando || !artefacto;
+    botonDescargar.hidden = editando || !descargas;
+  }
   if (claude && typeof claude.use === "function") {
-    claude.use("artifact").then(function (ns) {
-      if (!ns) return;
-      artefacto = ns;
-      document.body.appendChild(barra);
-      document.body.appendChild(selector);
-    }, function () {});
+    claude.use("artifact").then(function (ns) { if (ns) { artefacto = ns; mostrarBarra(); } }, function () {});
+    claude.use("downloads").then(function (ns) { if (ns) { descargas = ns; mostrarBarra(); } }, function () {});
+  } else {
+    // Archivo abierto directamente en el navegador: se ofrece guardar como PDF
+    var botonPdf = document.createElement("button");
+    botonPdf.type = "button";
+    botonPdf.className = "boton-pdf";
+    botonPdf.textContent = "Guardar como PDF";
+    botonPdf.title = "En la ventana de impresión elija «Guardar como PDF» como destino";
+    botonPdf.addEventListener("click", function () { window.print(); });
+    document.body.appendChild(botonPdf);
   }
 })();
 </script>
