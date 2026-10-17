@@ -1,0 +1,9 @@
+Cargando escenario de prueba (500 usuarios, 30.000 tickets)...
+  usuarios: 500
+  tickets:  30000
+Ejecutando 10 usuarios concurrentes x 20 consultas...
+  consultas realizadas: 200
+  tiempo promedio:      0.069 s
+  percentil 95:         0.225 s
+  tiempo máximo:        0.248 s
+Resultado RNF-06 (máximo 3 s): CUMPLE
