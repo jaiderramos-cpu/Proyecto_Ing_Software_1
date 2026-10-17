@@ -54,7 +54,9 @@ def transicion_permitida(actual, nuevo):
 
 def validar_texto(valor, campo, maximo):
     """Valida un texto obligatorio y su longitud máxima (RN-02, RNF-10)."""
-    if not isinstance(valor, str) or valor == "":
+    # DEF-02: se quitan los espacios antes de revisar, para no aceptar textos "en blanco"
+    valor = valor.strip() if isinstance(valor, str) else ""
+    if valor == "":
         raise ErrorValidacion(f"El campo «{campo}» es obligatorio.")
     if len(valor) > maximo:
         raise ErrorValidacion(f"El campo «{campo}» admite máximo {maximo} caracteres.")
