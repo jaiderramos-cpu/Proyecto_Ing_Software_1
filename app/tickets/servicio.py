@@ -110,6 +110,9 @@ def crear(con, usuario, datos, ahora=None):
 
 def asignar(con, usuario, ticket_id, tecnico_id, ahora=None):
     """RF-06, RN-06: asigna un ticket Nuevo a un técnico activo."""
+    if not _es_gestor(usuario):
+        # DEF-01 / SC-01: el permiso se valida en el servidor, no solo ocultando el botón (RNF-04)
+        raise r.ErrorPermiso("Solo un administrador o coordinador puede asignar tickets.")
     ticket = _cargar(con, ticket_id)
     tecnico = repo.buscar_usuario(con, _entero(tecnico_id, "Técnico"))
     if tecnico is None or tecnico["rol"] != "tecnico" or not tecnico["activo"]:
