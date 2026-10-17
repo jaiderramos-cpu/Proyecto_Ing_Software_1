@@ -82,4 +82,5 @@ def validar_datos_ticket(datos):
 def puede_reabrir(fecha_resolucion, ahora):
     """RN-09: se puede reabrir durante los cinco días calendario siguientes a la resolución."""
     dias = (ahora.date() - fecha_resolucion.date()).days
-    return 0 <= dias < DIAS_REAPERTURA
+    # DEF-03: el quinto día también está dentro del plazo (antes se usaba "<" y se perdía ese día)
+    return 0 <= dias <= DIAS_REAPERTURA
