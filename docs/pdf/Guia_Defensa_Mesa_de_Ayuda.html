@@ -162,108 +162,69 @@ body.editando figure img:hover { outline: 3px solid var(--marca); }
 <article id="doc" data-archivo="Guia_Defensa_Mesa_de_Ayuda">
 
 <section class="portada">
-  <div class="institucion">Ingeniería de Software I · Uso del equipo</div>
-  <h1>Guía para defender el proyecto</h1>
+  <div class="institucion">Ingeniería de Software I · Guía de defensa</div>
+  <h1>Defensa del proyecto</h1>
   <div class="subtitulo">Sistema de gestión de solicitudes de soporte técnico</div>
 </section>
 
 <h2>Antes de la defensa</h2>
-<p>Abran una terminal (PowerShell) en la carpeta <code>soporte-ti</code> y ejecuten esto una sola vez:</p>
+<p>En PowerShell, dentro de la carpeta <code>soporte-ti</code>, ejecuten una vez:</p>
 <div class="prompt">.venv\Scripts\activate
 flask --app app iniciar-bd
 python -m pytest -v</div>
-<p>Si al final aparece <strong>27 passed</strong>, todo está listo. Dejen abiertos el informe, la <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">aplicación en vivo</a> y el archivo <code>app/tickets/reglas.py</code> en Visual Studio Code.</p>
-<p>La idea que deben transmitir: <strong>«Construimos el módulo de tickets: cada ticket sigue estados controlados, cada persona solo hace lo que su rol permite, y 18 casos de prueba encontraron 3 defectos que corregimos en ramas de Git».</strong></p>
+<p>Debe terminar con <strong>27 passed</strong>. Abran el <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">sistema en vivo</a>, el informe y el archivo <code>app/tickets/reglas.py</code>.</p>
 
-<h2>Demostración paso a paso</h2>
-<p>Usen la <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">aplicación en vivo</a>, que ya trae los tickets de las capturas. La versión local (<code>flask --app app run</code> y abrir http://127.0.0.1:5000) tiene las mismas pantallas, pero empieza sin tickets. Contraseña de todos: <code>Soporte2026*</code>; en la pantalla de ingreso basta con pulsar el nombre del usuario.</p>
+<h2>Presentación (3 minutos)</h2>
+<p><strong>Qué hace.</strong> Centraliza las solicitudes de soporte: cada persona registra un ticket con código único, un coordinador lo asigna a un técnico, el técnico lo atiende y el solicitante confirma la solución. Todo queda en un historial.</p>
+<p><strong>Cómo está hecho.</strong> Seis componentes con una sola responsabilidad cada uno. Implementamos solo el <strong>Módulo de Tickets</strong>; los demás están documentados.</p>
+<p><strong>Cómo lo comprobamos.</strong> 18 casos de prueba (27 ejecuciones) automatizados. La primera ejecución encontró 3 defectos; los corregimos en ramas de Git y las 27 pasaron.</p>
+<p><strong>Resultados.</strong> 27 de 27 pruebas aprobadas, y la consulta más lenta tarda menos de 0,25 segundos con 30.000 tickets (el límite era 3).</p>
+
+<h2>Demostración</h2>
+<p>Usen el sistema en vivo. Contraseña de todos: <code>Soporte2026*</code>; basta con pulsar el nombre del usuario.</p>
 <ol>
-  <li><strong>Entren como Ana (solicitante).</strong> Registren un ticket escribiendo solo espacios en el asunto: aparece «El campo Asunto es obligatorio». Luego regístrenlo bien y muestren el código TK y el estado Nuevo.</li>
-  <li><strong>Sigan como Ana.</strong> Abran un ticket de Luis (por ejemplo TK-000004): aparece «Acceso no permitido».</li>
-  <li><strong>Entren como Carla (coordinadora).</strong> Filtren por prioridad Alta y asignen el ticket nuevo a Pedro. Señalen que el técnico inactivo no aparece en la lista.</li>
-  <li><strong>Entren como Pedro (técnico).</strong> Pasen el ticket a En progreso. Intenten marcarlo Resuelto sin escribir la solución: aparece el aviso. Luego resuélvanlo con una solución.</li>
-  <li><strong>Vuelvan como Ana.</strong> Cierren el ticket y muestren que ya no hay acciones, pero el historial completo sigue ahí.</li>
-  <li><strong>Entren como Luis.</strong> Abran TK-000002 (resuelto hace 9 días) e intenten reabrirlo: aparece «El plazo de 5 días para reabrir terminó».</li>
+  <li><strong>Ana:</strong> registra un ticket con el asunto en blanco (muestra el error) y luego uno válido.</li>
+  <li><strong>Ana:</strong> abre el ticket TK-000004, que es de Luis: aparece «Acceso no permitido».</li>
+  <li><strong>Carla (coordinadora):</strong> asigna el ticket de Ana a Pedro. El técnico inactivo no aparece en la lista.</li>
+  <li><strong>Pedro:</strong> lo pasa a En progreso e intenta resolverlo sin escribir la solución (aparece el aviso). Luego lo resuelve.</li>
+  <li><strong>Ana:</strong> confirma y cierra el ticket. Ya no tiene acciones, pero el historial se conserva.</li>
+  <li><strong>Luis:</strong> intenta reabrir TK-000002, resuelto hace 9 días: aparece «El plazo de 5 días terminó».</li>
 </ol>
-<p class="nota">En la aplicación en vivo, el botón «Restablecer datos de ejemplo» deja todo como al principio.</p>
+<p class="nota">El botón «Restablecer datos de ejemplo» devuelve el sistema a su estado inicial.</p>
 
-<h2>Comandos para evaluar el comportamiento</h2>
+<h2>Comandos según lo que pide el docente</h2>
 <div class="tabla"><table>
-  <thead><tr><th>Comando</th><th>Qué muestra</th><th>Qué decir</th></tr></thead>
+  <thead><tr><th>Lo que pide el docente</th><th>Comando</th><th>Qué decir</th></tr></thead>
   <tbody>
-    <tr><td><code>python -m pytest -v</code></td><td>Los 18 casos (27 ejecuciones) en verde.</td><td>«Todas las reglas de negocio se comprueban automáticamente.»</td></tr>
-    <tr><td><code>python -m pytest -v -k cp07</code></td><td>Solo el caso de asignación sin permiso.</td><td>«Con -k elegimos un caso por su nombre.»</td></tr>
-    <tr><td><code>python -m pytest -v -k "cp02 or cp13"</code></td><td>Los casos de textos en blanco y de plazo de reapertura.</td><td>«Son pruebas de valores límite.»</td></tr>
-    <tr><td><code>python scripts/medir_rendimiento.py</code></td><td>Carga 30.000 tickets y termina en «CUMPLE» (tarda menos de un minuto).</td><td>«La consulta más lenta tarda menos de medio segundo; el límite es 3.»</td></tr>
-    <tr><td><code>flask --app app respaldar-bd</code></td><td>Crea una copia en la carpeta <code>respaldos</code>.</td><td>«Así se cumple el respaldo pedido en RNF-09.»</td></tr>
-    <tr><td><code>git log --graph --oneline --all</code></td><td>El árbol de ramas y merges.</td><td>«Cada funcionalidad y cada defecto tuvo su propia rama.»</td></tr>
-    <tr><td><code>git show 6dfb6a9</code></td><td>El cambio exacto que corrigió DEF-01 (líneas verdes agregadas).</td><td>«Esta es la validación de rol que faltaba en el servidor.»</td></tr>
-    <tr><td><code>git show c310d6a</code></td><td>El cambio de <code>&lt;</code> a <code>&lt;=</code> del plazo de reapertura.</td><td>«Un solo carácter dejaba por fuera el quinto día.»</td></tr>
+    <tr><td>Casos de prueba (mínimo 12)</td><td><code>python -m pytest -v</code></td><td>«18 casos, 27 ejecuciones, todas en verde.»</td></tr>
+    <tr><td>Ver un caso concreto</td><td><code>python -m pytest -v -k cp07</code></td><td>«Este caso comprueba que un solicitante no puede asignar.»</td></tr>
+    <tr><td>Rendimiento (RNF-06)</td><td><code>python scripts/medir_rendimiento.py</code></td><td>«Carga 30.000 tickets y 500 usuarios; termina en CUMPLE.» Tarda unos 3 segundos.</td></tr>
+    <tr><td>Defectos y correcciones</td><td><code>git --no-pager show 6dfb6a9</code></td><td>«Esta es la validación de rol que faltaba (DEF-01).» Para salir, pulsen <strong>q</strong>.</td></tr>
+    <tr><td>Otro defecto corregido</td><td><code>git --no-pager show c310d6a</code></td><td>«Un solo signo, &lt; por &lt;=, dejaba por fuera el día 5 (DEF-03).»</td></tr>
+    <tr><td>Git: ramas, commits y merges</td><td><code>git --no-pager log --graph --oneline --all</code></td><td>«Cada funcionalidad y cada defecto tuvo su rama; todo se unió con merge.»</td></tr>
+    <tr><td>Respaldo (RNF-09)</td><td><code>flask --app app respaldar-bd</code></td><td>«Crea una copia de la base en la carpeta respaldos.»</td></tr>
   </tbody>
 </table></div>
-<p>Para salir de <code>git show</code> o <code>git log</code> pulsen la tecla <strong>q</strong>.</p>
 
-<h2>Cambiar el código para mostrar por qué falla</h2>
-<p>Si el docente pide demostrar que las pruebas sirven, hagan uno de estos cambios, guarden el archivo y ejecuten el comando. La prueba fallará y explicarán por qué. Todos estos cambios ya se probaron y dan exactamente el resultado indicado.</p>
-<p><strong>Para dejar todo como estaba</strong> después de cada cambio, ejecuten: <code>git checkout -- app</code> y luego <code>python -m pytest</code> (debe volver a decir 27 passed).</p>
+<h2>Mostrar que las pruebas detectan errores</h2>
+<p>Cambien una sola línea, ejecuten el comando, expliquen la falla y luego restauren con <code>git checkout -- app</code>. Después de restaurar, <code>python -m pytest</code> debe volver a decir <strong>27 passed</strong>.</p>
+<div class="tabla"><table>
+  <thead><tr><th>Qué cambiar</th><th>Dónde</th><th>Comando</th><th>Resultado y explicación</th></tr></thead>
+  <tbody>
+    <tr><td>Poner <code>#</code> al inicio de las 3 líneas de <code>if not _es_gestor(usuario):</code></td><td><code>app/tickets/servicio.py</code>, líneas 113 a 115</td><td><code>python -m pytest -v -k cp07</code></td><td><strong>2 failed</strong>, <code>302 == 403</code>: el servidor aceptó la asignación de un solicitante. Ocultar el botón no protege.</td></tr>
+    <tr><td><code>&lt;=</code> por <code>&lt;</code> en el plazo</td><td><code>app/tickets/reglas.py</code>, línea 86</td><td><code>python -m pytest -v -k cp13</code></td><td><strong>1 failed</strong>: el día 5 ya no se puede reabrir. Por eso se prueban los valores límite.</td></tr>
+    <tr><td><code>valor.strip()</code> por <code>valor</code></td><td><code>app/tickets/reglas.py</code>, línea 58</td><td><code>python -m pytest -v -k cp02</code></td><td><strong>2 failed</strong>: un asunto con espacios llega a la base de datos y falla con error técnico.</td></tr>
+    <tr><td><code>(EN_PROGRESO,)</code> por <code>(EN_PROGRESO, RESUELTO)</code></td><td><code>app/tickets/reglas.py</code>, línea 25</td><td><code>python -m pytest -v -k cp09</code></td><td><strong>1 failed</strong>: se permite un cambio de estado que la regla RN-05 no permite.</td></tr>
+    <tr><td><code>MAX_ASUNTO = 150</code> por <code>100</code></td><td><code>app/tickets/reglas.py</code>, línea 34</td><td><code>python -m pytest -v -k cp04</code></td><td><strong>1 failed</strong>: un asunto de 150 caracteres, válido antes, ahora se rechaza.</td></tr>
+  </tbody>
+</table></div>
 
-<h3>Quitar el permiso para asignar (DEF-01 / SC-01)</h3>
-<div class="tabla"><table class="ficha"><tbody>
-  <tr><th>Archivo</th><td><code>app/tickets/servicio.py</code>, líneas 113 a 115</td></tr>
-  <tr><th>Cambio</th><td>Poner <code>#</code> al inicio de las tres líneas que empiezan con <code>if not _es_gestor(usuario):</code></td></tr>
-  <tr><th>Comando</th><td><code>python -m pytest -v -k cp07</code></td></tr>
-  <tr><th>Resultado</th><td><strong>2 failed</strong> con <code>assert 302 == 403</code></td></tr>
-  <tr><th>Explicación</th><td>El servidor esperaba responder 403 (prohibido), pero respondió 302 (aceptó y redirigió): un solicitante logró asignar. Ocultar el botón no protege; el servidor debe revisar el rol.</td></tr>
-</tbody></table></div>
-
-<h3>Cambiar el plazo de reapertura (DEF-03 / RN-09)</h3>
-<div class="tabla"><table class="ficha"><tbody>
-  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 86</td></tr>
-  <tr><th>Cambio</th><td><code>return 0 &lt;= dias &lt;= DIAS_REAPERTURA</code> por <code>return 0 &lt;= dias &lt; DIAS_REAPERTURA</code></td></tr>
-  <tr><th>Comando</th><td><code>python -m pytest -v -k cp13</code></td></tr>
-  <tr><th>Resultado</th><td><strong>1 failed, 2 passed</strong>. Falla <code>[5-True]</code> con «El plazo de 5 días para reabrir terminó».</td></tr>
-  <tr><th>Explicación</th><td>El día 0 y el día 6 siguen bien, pero el día 5 queda por fuera. Por eso se prueban los valores límite.</td></tr>
-</tbody></table></div>
-
-<h3>Aceptar textos con solo espacios (DEF-02 / RN-02)</h3>
-<div class="tabla"><table class="ficha"><tbody>
-  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 58</td></tr>
-  <tr><th>Cambio</th><td><code>valor = valor.strip() if isinstance(valor, str) else ""</code> por <code>valor = valor if isinstance(valor, str) else ""</code></td></tr>
-  <tr><th>Comando</th><td><code>python -m pytest -v -k cp02</code></td></tr>
-  <tr><th>Resultado</th><td><strong>2 failed, 2 passed</strong>: «CHECK constraint failed» y «DID NOT RAISE ErrorValidacion».</td></tr>
-  <tr><th>Explicación</th><td>Sin quitar los espacios, «   » parece un texto válido. En el asunto lo detiene la base de datos con un error técnico, y la descripción se guarda en blanco.</td></tr>
-</tbody></table></div>
-
-<h3>Permitir una transición prohibida (RN-05)</h3>
-<div class="tabla"><table class="ficha"><tbody>
-  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 25</td></tr>
-  <tr><th>Cambio</th><td><code>ASIGNADO: (EN_PROGRESO,),</code> por <code>ASIGNADO: (EN_PROGRESO, RESUELTO),</code></td></tr>
-  <tr><th>Comando</th><td><code>python -m pytest -v -k cp09</code></td></tr>
-  <tr><th>Resultado</th><td><strong>1 failed</strong> con «DID NOT RAISE ErrorValidacion».</td></tr>
-  <tr><th>Explicación</th><td>Todas las transiciones están en una sola tabla. Si se agrega una que la regla no permite, la prueba lo detecta. También muestra la cohesión: la regla vive en un solo lugar.</td></tr>
-</tbody></table></div>
-
-<h3>Cambiar el largo máximo del asunto (RNF-10)</h3>
-<div class="tabla"><table class="ficha"><tbody>
-  <tr><th>Archivo</th><td><code>app/tickets/reglas.py</code>, línea 34</td></tr>
-  <tr><th>Cambio</th><td><code>MAX_ASUNTO = 150</code> por <code>MAX_ASUNTO = 100</code></td></tr>
-  <tr><th>Comando</th><td><code>python -m pytest -v -k cp04</code></td></tr>
-  <tr><th>Resultado</th><td><strong>1 failed</strong> con «El campo Asunto admite máximo 100 caracteres».</td></tr>
-  <tr><th>Explicación</th><td>El asunto de 150 caracteres, que antes era válido, ahora se rechaza. Cambiar un número en las reglas cambia el comportamiento de todo el sistema.</td></tr>
-</tbody></table></div>
-
-<h2>Preguntas que pueden hacer</h2>
-<p><strong>¿Por qué implementaron Tickets?</strong> Es el centro del sistema: reúne casi todos los requisitos (RF-03 a RF-11) y reglas de negocio.</p>
-<p><strong>¿Qué es bajo acoplamiento en su proyecto?</strong> Que la encuesta de satisfacción (SC-03) se puede agregar como componente nuevo sin cambiar Tickets.</p>
-<p><strong>¿Por qué SC-02 es perfectivo y no adaptativo?</strong> Adaptativo es cuando cambia el entorno (sistema operativo, leyes). SC-02 es una función nueva para mejorar el servicio.</p>
-<p><strong>¿Por qué pytest muestra 27 si son 18 casos?</strong> Algunos casos prueban varios datos; por ejemplo, CP-13 prueba los días 0, 5 y 6.</p>
-<p><strong>¿Cómo cumplen «sin cambios a medias»?</strong> El estado y el historial se guardan en una sola transacción; CP-15 simula un error y el ticket queda igual.</p>
-<p><strong>¿Cómo se guarda la contraseña?</strong> Cifrada con un hash (scrypt). Se puede comprobar, pero no recuperar.</p>
-<p><strong>¿Qué hizo la IA y qué hicieron ustedes?</strong> La IA generó la mayor parte del código, las pruebas y la documentación. Nosotros revisamos que cumpliera cada regla, ejecutamos las pruebas, analizamos los fallos y validamos las pantallas. Somos responsables de todo el código.</p>
-<p><strong>¿La aplicación en vivo es la misma del repositorio?</strong> Es una copia en el navegador con la misma interfaz y las mismas reglas, para mostrarla sin instalar nada. La versión oficial es la de Flask del repositorio, que es la que se prueba con pytest.</p>
-
-<h2>Nota para el equipo</h2>
-<p class="nota">Los tres defectos estaban en la primera versión que se subió a Git, y las pruebas los detectaron de verdad. Sin embargo, esa versión se escribió con esos errores a propósito, para que el ciclo prueba → defecto → corrección quedara registrado. Si el docente pregunta cómo surgieron, díganlo con claridad: son errores muy comunes (validar solo en la pantalla, no quitar espacios, confundir «menor que» con «menor o igual que») y las pruebas se diseñaron para encontrarlos.</p>
+<h2>Preguntas frecuentes</h2>
+<p><strong>¿Por qué solo implementaron Tickets?</strong> Es el centro del sistema y concentra casi todos los requisitos y reglas. Los demás módulos están documentados.</p>
+<p><strong>¿Qué significa bajo acoplamiento aquí?</strong> Que la encuesta de satisfacción (SC-03) se podría agregar como componente nuevo sin cambiar el módulo de tickets.</p>
+<p><strong>¿Por qué SC-02 es perfectivo y no adaptativo?</strong> Adaptativo es cuando cambia el entorno. SC-02 es una función nueva que pide la organización.</p>
+<p><strong>¿Qué hizo la IA?</strong> Generó gran parte del código y las pruebas a partir de los requisitos. Nosotros revisamos cada regla, ejecutamos las pruebas, analizamos los fallos y validamos las pantallas. Respondemos por todo el código.</p>
+<p><strong>¿La versión en vivo es la misma del repositorio?</strong> Es una copia en el navegador con la misma interfaz y reglas, para verla sin instalar nada. La versión que se prueba con pytest es la del repositorio.</p>
 
 </article>
 <script id="motor">(function () {
