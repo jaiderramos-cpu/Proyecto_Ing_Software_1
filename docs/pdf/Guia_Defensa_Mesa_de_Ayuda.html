@@ -167,12 +167,16 @@ body.editando figure img:hover { outline: 3px solid var(--marca); }
   <div class="subtitulo">Sistema de gestión de solicitudes de soporte técnico</div>
 </section>
 
-<h2>Antes de la defensa</h2>
-<p>En PowerShell, dentro de la carpeta <code>soporte-ti</code>, ejecuten una vez:</p>
-<div class="prompt">.venv\Scripts\activate
-flask --app app iniciar-bd
-python -m pytest -v</div>
-<p>Debe terminar con <strong>27 passed</strong>. Abran el <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">sistema en vivo</a>, el informe y el archivo <code>app/tickets/reglas.py</code>.</p>
+<h2>Preparar el proyecto (una sola vez)</h2>
+<p>Abran PowerShell en la carpeta donde quieren guardar el proyecto y ejecuten, en orden:</p>
+<div class="prompt">git clone https://github.com/jaiderramos-cpu/Proyecto_Ing_Software_1.git
+cd Proyecto_Ing_Software_1
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\flask --app app iniciar-bd
+.venv\Scripts\python -m pytest -v</div>
+<p>Al final debe aparecer <strong>27 passed</strong>. La carpeta se llama <strong>Proyecto_Ing_Software_1</strong>. La carpeta <code>.venv</code> no se sube a GitHub, por eso se crea en este paso.</p>
+<p class="nota">Para los comandos de la defensa no hace falta activar el entorno. Usen siempre <code>.venv\Scripts\python</code> y <code>.venv\Scripts\flask</code>, tal como aparecen en esta guía. Ejecútenlos dentro de la carpeta <code>Proyecto_Ing_Software_1</code>.</p>
 
 <h2>Presentación (3 minutos)</h2>
 <p><strong>Qué hace.</strong> Centraliza las solicitudes de soporte: cada persona registra un ticket con código único, un coordinador lo asigna a un técnico, el técnico lo atiende y el solicitante confirma la solución. Todo queda en un historial.</p>
@@ -181,7 +185,7 @@ python -m pytest -v</div>
 <p><strong>Resultados.</strong> 27 de 27 pruebas aprobadas, y la consulta más lenta tarda menos de 0,25 segundos con 30.000 tickets (el límite era 3).</p>
 
 <h2>Demostración</h2>
-<p>Usen el sistema en vivo. Contraseña de todos: <code>Soporte2026*</code>; basta con pulsar el nombre del usuario.</p>
+<p>Usen el sistema en vivo: <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">Mesa de Ayuda en Vivo</a>. Contraseña de todos: <code>Soporte2026*</code>; basta con pulsar el nombre del usuario.</p>
 <ol>
   <li><strong>Ana:</strong> registra un ticket con el asunto en blanco (muestra el error) y luego uno válido.</li>
   <li><strong>Ana:</strong> abre el ticket TK-000004, que es de Luis: aparece «Acceso no permitido».</li>
@@ -190,32 +194,32 @@ python -m pytest -v</div>
   <li><strong>Ana:</strong> confirma y cierra el ticket. Ya no tiene acciones, pero el historial se conserva.</li>
   <li><strong>Luis:</strong> intenta reabrir TK-000002, resuelto hace 9 días: aparece «El plazo de 5 días terminó».</li>
 </ol>
-<p class="nota">El botón «Restablecer datos de ejemplo» devuelve el sistema a su estado inicial.</p>
+<p class="nota">El botón «Restablecer datos de ejemplo» devuelve el sistema a su estado inicial. Para ver la versión local, ejecuten <code>.venv\Scripts\flask --app app run</code> y abran http://127.0.0.1:5000 (empieza sin tickets).</p>
 
 <h2>Comandos según lo que pide el docente</h2>
 <div class="tabla"><table>
   <thead><tr><th>Lo que pide el docente</th><th>Comando</th><th>Qué decir</th></tr></thead>
   <tbody>
-    <tr><td>Casos de prueba (mínimo 12)</td><td><code>python -m pytest -v</code></td><td>«18 casos, 27 ejecuciones, todas en verde.»</td></tr>
-    <tr><td>Ver un caso concreto</td><td><code>python -m pytest -v -k cp07</code></td><td>«Este caso comprueba que un solicitante no puede asignar.»</td></tr>
-    <tr><td>Rendimiento (RNF-06)</td><td><code>python scripts/medir_rendimiento.py</code></td><td>«Carga 30.000 tickets y 500 usuarios; termina en CUMPLE.» Tarda unos 3 segundos.</td></tr>
+    <tr><td>Casos de prueba (mínimo 12)</td><td><code>.venv\Scripts\python -m pytest -v</code></td><td>«18 casos, 27 ejecuciones, todas en verde.»</td></tr>
+    <tr><td>Ver un caso concreto</td><td><code>.venv\Scripts\python -m pytest -v -k cp07</code></td><td>«Este caso comprueba que un solicitante no puede asignar.»</td></tr>
+    <tr><td>Rendimiento (RNF-06)</td><td><code>.venv\Scripts\python scripts\medir_rendimiento.py</code></td><td>«Carga 30.000 tickets y 500 usuarios; termina en CUMPLE.» Tarda unos 3 segundos.</td></tr>
     <tr><td>Defectos y correcciones</td><td><code>git --no-pager show 6dfb6a9</code></td><td>«Esta es la validación de rol que faltaba (DEF-01).» Para salir, pulsen <strong>q</strong>.</td></tr>
     <tr><td>Otro defecto corregido</td><td><code>git --no-pager show c310d6a</code></td><td>«Un solo signo, &lt; por &lt;=, dejaba por fuera el día 5 (DEF-03).»</td></tr>
     <tr><td>Git: ramas, commits y merges</td><td><code>git --no-pager log --graph --oneline --all</code></td><td>«Cada funcionalidad y cada defecto tuvo su rama; todo se unió con merge.»</td></tr>
-    <tr><td>Respaldo (RNF-09)</td><td><code>flask --app app respaldar-bd</code></td><td>«Crea una copia de la base en la carpeta respaldos.»</td></tr>
+    <tr><td>Respaldo (RNF-09)</td><td><code>.venv\Scripts\flask --app app respaldar-bd</code></td><td>«Crea una copia de la base en la carpeta respaldos.»</td></tr>
   </tbody>
 </table></div>
 
 <h2>Mostrar que las pruebas detectan errores</h2>
-<p>Cambien una sola línea, ejecuten el comando, expliquen la falla y luego restauren con <code>git checkout -- app</code>. Después de restaurar, <code>python -m pytest</code> debe volver a decir <strong>27 passed</strong>.</p>
+<p>Cambien las líneas indicadas (en Visual Studio Code), ejecuten el comando, expliquen la falla y luego restauren con <code>git checkout -- app</code>. Después de restaurar, <code>.venv\Scripts\python -m pytest</code> debe volver a decir <strong>27 passed</strong>.</p>
 <div class="tabla"><table>
   <thead><tr><th>Qué cambiar</th><th>Dónde</th><th>Comando</th><th>Resultado y explicación</th></tr></thead>
   <tbody>
-    <tr><td>Poner <code>#</code> al inicio de las 3 líneas de <code>if not _es_gestor(usuario):</code></td><td><code>app/tickets/servicio.py</code>, líneas 113 a 115</td><td><code>python -m pytest -v -k cp07</code></td><td><strong>2 failed</strong>, <code>302 == 403</code>: el servidor aceptó la asignación de un solicitante. Ocultar el botón no protege.</td></tr>
-    <tr><td><code>&lt;=</code> por <code>&lt;</code> en el plazo</td><td><code>app/tickets/reglas.py</code>, línea 86</td><td><code>python -m pytest -v -k cp13</code></td><td><strong>1 failed</strong>: el día 5 ya no se puede reabrir. Por eso se prueban los valores límite.</td></tr>
-    <tr><td><code>valor.strip()</code> por <code>valor</code></td><td><code>app/tickets/reglas.py</code>, línea 58</td><td><code>python -m pytest -v -k cp02</code></td><td><strong>2 failed</strong>: un asunto con espacios llega a la base de datos y falla con error técnico.</td></tr>
-    <tr><td><code>(EN_PROGRESO,)</code> por <code>(EN_PROGRESO, RESUELTO)</code></td><td><code>app/tickets/reglas.py</code>, línea 25</td><td><code>python -m pytest -v -k cp09</code></td><td><strong>1 failed</strong>: se permite un cambio de estado que la regla RN-05 no permite.</td></tr>
-    <tr><td><code>MAX_ASUNTO = 150</code> por <code>100</code></td><td><code>app/tickets/reglas.py</code>, línea 34</td><td><code>python -m pytest -v -k cp04</code></td><td><strong>1 failed</strong>: un asunto de 150 caracteres, válido antes, ahora se rechaza.</td></tr>
+    <tr><td>Poner <code>#</code> al inicio de las 3 líneas de <code>if not _es_gestor(usuario):</code></td><td><code>app/tickets/servicio.py</code>, líneas 113 a 115</td><td><code>.venv\Scripts\python -m pytest -v -k cp07</code></td><td><strong>2 failed</strong>, <code>302 == 403</code>: el servidor aceptó la asignación de un solicitante. Ocultar el botón no protege.</td></tr>
+    <tr><td><code>&lt;=</code> por <code>&lt;</code> en el plazo</td><td><code>app/tickets/reglas.py</code>, línea 86</td><td><code>.venv\Scripts\python -m pytest -v -k cp13</code></td><td><strong>1 failed</strong>: el día 5 ya no se puede reabrir. Por eso se prueban los valores límite.</td></tr>
+    <tr><td><code>valor.strip()</code> por <code>valor</code></td><td><code>app/tickets/reglas.py</code>, línea 58</td><td><code>.venv\Scripts\python -m pytest -v -k cp02</code></td><td><strong>2 failed</strong>: un asunto con espacios llega a la base de datos y falla con error técnico.</td></tr>
+    <tr><td><code>(EN_PROGRESO,)</code> por <code>(EN_PROGRESO, RESUELTO)</code></td><td><code>app/tickets/reglas.py</code>, línea 25</td><td><code>.venv\Scripts\python -m pytest -v -k cp09</code></td><td><strong>1 failed</strong>: se permite un cambio de estado que la regla RN-05 no permite.</td></tr>
+    <tr><td><code>MAX_ASUNTO = 150</code> por <code>100</code></td><td><code>app/tickets/reglas.py</code>, línea 34</td><td><code>.venv\Scripts\python -m pytest -v -k cp04</code></td><td><strong>1 failed</strong>: un asunto de 150 caracteres, válido antes, ahora se rechaza.</td></tr>
   </tbody>
 </table></div>
 
