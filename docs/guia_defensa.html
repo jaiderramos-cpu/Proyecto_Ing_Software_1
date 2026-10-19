@@ -183,6 +183,7 @@ python -m venv .venv
 <p><strong>Cómo está hecho.</strong> Seis componentes con una sola responsabilidad cada uno. Implementamos solo el <strong>Módulo de Tickets</strong>; los demás están documentados.</p>
 <p><strong>Cómo lo comprobamos.</strong> 18 casos de prueba (27 ejecuciones) automatizados. La primera ejecución encontró 3 defectos; los corregimos en ramas de Git y las 27 pasaron.</p>
 <p><strong>Resultados.</strong> 27 de 27 pruebas aprobadas, y la consulta más lenta tarda menos de 0,25 segundos con 30.000 tickets (el límite era 3).</p>
+<p><strong>Dónde está todo.</strong> Repositorio: <a href="https://github.com/jaiderramos-cpu/Proyecto_Ing_Software_1">github.com/jaiderramos-cpu/Proyecto_Ing_Software_1</a>. Versión entregada: etiqueta <code>v1.0.0</code> en la rama <code>main</code>.</p>
 
 <h2>Demostración</h2>
 <p>Usen el sistema en vivo: <a href="https://claude.ai/artifact/5LZAdyDZ1AWuMZvkDhFzHV">Mesa de Ayuda en Vivo</a>. Contraseña de todos: <code>Soporte2026*</code>; basta con pulsar el nombre del usuario.</p>
@@ -227,7 +228,8 @@ python -m venv .venv
 <p><strong>¿Por qué solo implementaron Tickets?</strong> Es el centro del sistema y concentra casi todos los requisitos y reglas. Los demás módulos están documentados.</p>
 <p><strong>¿Qué significa bajo acoplamiento aquí?</strong> Que la encuesta de satisfacción (SC-03) se podría agregar como componente nuevo sin cambiar el módulo de tickets.</p>
 <p><strong>¿Por qué SC-02 es perfectivo y no adaptativo?</strong> Adaptativo es cuando cambia el entorno. SC-02 es una función nueva que pide la organización.</p>
-<p><strong>¿Qué hizo la IA?</strong> Generó gran parte del código y las pruebas a partir de los requisitos. Nosotros revisamos cada regla, ejecutamos las pruebas, analizamos los fallos y validamos las pantallas. Respondemos por todo el código.</p>
+<p><strong>¿Qué hizo la IA?</strong> Generó gran parte del código y las pruebas a partir de los requisitos, con Claude Code (Opus 5.5 y Haiku 5.5, que aparecen en los commits). Nosotros revisamos cada regla, ejecutamos las pruebas, analizamos los fallos y validamos las pantallas. Respondemos por todo el código.</p>
+<p><strong>¿Dónde se ve el trabajo en Git?</strong> En el repositorio: <code>git --no-pager log --graph --oneline --all</code> muestra las ramas y los merges, y <code>git --no-pager tag</code> muestra <code>v1.0.0</code>.</p>
 <p><strong>¿La versión en vivo es la misma del repositorio?</strong> Es una copia en el navegador con la misma interfaz y reglas, para verla sin instalar nada. La versión que se prueba con pytest es la del repositorio.</p>
 
 </article>
